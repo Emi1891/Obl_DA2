@@ -10,4 +10,8 @@
     <ProjectReference Include="..\DarkKitchen.Models\DarkKitchen.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataAccess.Interfaces\" />
+  </ItemGroup>
+
 </Project>

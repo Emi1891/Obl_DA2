@@ -11,7 +11,7 @@ namespace DarkKitchen.Tests.Controllers;
 [TestClass]
 public class ProductControllerTest
 {
-    private readonly Guid validProductId = Guid.NewGuid();
+    private readonly int validProductId = 1;
     private readonly string validProductName = "Valid Product Name";
     private readonly string validProductDescription = "Valid Product Description";
     private readonly string validProductLine = "Valid Product Line";

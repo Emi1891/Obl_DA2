@@ -1,16 +1,24 @@
 name: Build and Test
-
 on:
   pull_request:
   push:
     branches: [main, develop]
     paths:
-    - '**.cs'
-    - '**.csproj'
+      - '**.cs'
+      - '**.csproj'
 
 jobs:
+  restore:
+    name: Restore
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Restore dependencies
+        run: dotnet restore "./DarkKitchen/DarkKitchen.sln"
+
   run:
     name: Run
+    needs: restore
     uses: IngSoft-DA2/workflows/.github/workflows/reusable-build-test.yml@self-hosted
     permissions: write-all
     with:

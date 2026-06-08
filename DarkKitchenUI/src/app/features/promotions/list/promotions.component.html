@@ -1,0 +1,79 @@
+<div class="promotions-container">
+  <div class="promotions-header">
+    <div>
+      <h1>Promotions</h1>
+      <p class="subtitle">Browse, filter and manage promotions.</p>
+    </div>
+
+    <div class="header-actions">
+      @if (canCreate) {
+        <a routerLink="/promotions/new" class="primary-btn">+ New promotion</a>
+      }
+    </div>
+  </div>
+
+  @if (!canView) {
+    <p class="empty">You don't have permission to view promotions.</p>
+  } @else {
+    <form class="filters" [formGroup]="filtersForm" (ngSubmit)="load()">
+      <div class="field">
+        <label for="date">Date</label>
+        <input id="date" type="date" formControlName="date" />
+      </div>
+      <div class="field">
+        <label for="productLine">Product line</label>
+        <input id="productLine" type="text" formControlName="productLine" placeholder="e.g. Main" />
+      </div>
+      <div class="field">
+        <label for="productName">Product name</label>
+        <input id="productName" type="text" formControlName="productName" placeholder="e.g. Pizza" />
+      </div>
+      <div class="filter-actions">
+        <button type="submit" class="primary-btn">Apply</button>
+        <button type="button" class="ghost-btn" (click)="clearFilters()">Clear</button>
+      </div>
+    </form>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (isLoading) {
+      <p class="loading">Loading...</p>
+    } @else if (promotions.length === 0) {
+      <p class="empty">No promotions match the current filters.</p>
+    } @else {
+      <div class="promotions-grid">
+        @for (p of promotions; track trackById($index, p)) {
+          <article class="promotion-card">
+            <div class="promotion-body">
+              <div class="promotion-row">
+                <h3>{{ p.name }}</h3>
+                <span class="discount">-{{ p.discountPercentage }}%</span>
+              </div>
+              <p class="dates">{{ p.dateFrom | date:'mediumDate' }} — {{ p.dateTo | date:'mediumDate' }}</p>
+              @if (p.productCodes.length) {
+                <div class="tags">
+                  @for (code of p.productCodes; track code) {
+                    <span class="tag">{{ code }}</span>
+                  }
+                </div>
+              } @else {
+                <p class="no-products">No products assigned.</p>
+              }
+            </div>
+
+            <div class="promotion-actions">
+              @if (canEditProducts) {
+                <button type="button" class="ghost-btn" (click)="manageProducts(p)">Products</button>
+              }
+              @if (canEdit) {
+                <button type="button" class="primary-btn" (click)="edit(p)">Edit</button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+</div>

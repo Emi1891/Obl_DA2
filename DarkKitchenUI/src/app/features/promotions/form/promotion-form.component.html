@@ -1,0 +1,41 @@
+<div class="form-container">
+  <div class="form-card">
+    <button type="button" class="back-link" (click)="cancel()">← Back to promotions</button>
+
+    <h2>{{ isEdit ? 'Edit promotion' : 'New promotion' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="name">Name *</label>
+        <input id="name" type="text" formControlName="name" />
+      </div>
+
+      <div class="field">
+        <label for="discountPercentage">Discount (%) *</label>
+        <input id="discountPercentage" type="number" min="1" max="100" formControlName="discountPercentage" />
+      </div>
+
+      <div class="row two-cols">
+        <div class="field">
+          <label for="dateFrom">From *</label>
+          <input id="dateFrom" type="date" formControlName="dateFrom" />
+        </div>
+        <div class="field">
+          <label for="dateTo">To *</label>
+          <input id="dateTo" type="date" formControlName="dateTo" />
+        </div>
+      </div>
+
+      @if (errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
+
+      <div class="actions">
+        <button type="button" class="ghost-btn" (click)="cancel()">Cancel</button>
+        <button type="submit" class="primary-btn" [disabled]="isSubmitting">
+          {{ isEdit ? 'Save changes' : 'Create promotion' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

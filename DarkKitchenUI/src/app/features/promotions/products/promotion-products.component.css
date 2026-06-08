@@ -1,0 +1,175 @@
+.form-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 640px;
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-card.wide {
+  max-width: 720px;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  transition: color 0.15s;
+}
+
+.back-link:hover {
+  color: var(--dk-text);
+}
+
+h2 {
+  color: var(--dk-text);
+  font-size: 1.5rem;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--dk-crust);
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.product-row:hover {
+  border-color: var(--dk-accent);
+}
+
+.product-row.selected {
+  border-color: var(--dk-accent);
+  background-color: rgba(255, 111, 97, 0.06);
+}
+
+.product-row input[type="checkbox"] {
+  accent-color: var(--dk-accent);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.product-name {
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--dk-text);
+}
+
+.product-meta {
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.75rem;
+  color: var(--dk-subtext);
+  letter-spacing: 0.03em;
+}
+
+.product-price {
+  color: var(--dk-accent);
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.error {
+  color: var(--dk-error);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.85rem;
+  text-align: center;
+  background-color: rgba(255, 111, 97, 0.1);
+  border: 1px solid var(--dk-error);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.loading,
+.empty {
+  color: var(--dk-subtext);
+  text-align: center;
+  padding: 2rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.primary-btn,
+.ghost-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.primary-btn {
+  background-color: var(--dk-accent);
+  color: var(--dk-crust);
+}
+
+.primary-btn:hover:not(:disabled) {
+  background-color: var(--dk-accent-hover);
+}
+
+.primary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ghost-btn {
+  background-color: transparent;
+  color: var(--dk-text);
+  border-color: var(--dk-border);
+}
+
+.ghost-btn:hover {
+  border-color: var(--dk-accent);
+  color: var(--dk-accent);
+}
+
+@media (max-width: 720px) {
+  .form-container {
+    padding: 2rem 1.25rem;
+  }
+}

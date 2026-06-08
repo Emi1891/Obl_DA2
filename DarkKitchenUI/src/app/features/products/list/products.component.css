@@ -270,8 +270,57 @@ h3 {
   border-top: 1px solid var(--dk-border);
   padding: 0.75rem 1rem;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 0.5rem;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: auto;
+}
+
+.stepper button {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--dk-border);
+  background-color: var(--dk-surface-alt);
+  color: var(--dk-text);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.stepper button:hover {
+  border-color: var(--dk-accent);
+  color: var(--dk-accent);
+}
+
+.stepper .qty {
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 700;
+  color: var(--dk-text);
+  min-width: 1.25rem;
+  text-align: center;
+}
+
+.cart-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background-color: var(--dk-accent);
+  color: var(--dk-crust);
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .empty,

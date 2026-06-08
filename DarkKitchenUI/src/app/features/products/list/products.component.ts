@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
+import { CartService } from '../../../core/services/cart.service';
 import { Product, ProductFilters } from '../../../core/models/product.model';
 
 @Component({
@@ -18,6 +19,7 @@ export class ProductsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
+  readonly cart = inject(CartService);
 
   products: Product[] = [];
   isLoading = false;
@@ -36,6 +38,7 @@ export class ProductsComponent implements OnInit {
   readonly canToggleStatus = this.perms.has('UpdateProductStatus');
   readonly canImport = this.perms.has('ImportProducts');
   readonly canSeeMostRequested = this.perms.has('GetMostPopularProducts');
+  readonly canAddToCart = this.perms.has('PlaceOrder');
 
   ngOnInit(): void {
     if (this.auth.isTokenExpired()) {
@@ -43,6 +46,10 @@ export class ProductsComponent implements OnInit {
       return;
     }
     if (this.canView) this.load();
+  }
+
+  get visibleProducts(): Product[] {
+    return this.canToggleStatus ? this.products : this.products.filter(p => p.isActive);
   }
 
   load(): void {

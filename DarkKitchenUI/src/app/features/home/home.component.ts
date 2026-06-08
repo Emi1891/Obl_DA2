@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit {
     }
 
     if (perms.has('GetProducts')) {
-      calls.push(this.dashboard.getProductCount().pipe(
+      calls.push(this.dashboard.getProductCount(!perms.has('UpdateProductStatus')).pipe(
         map(n => ({
           label: 'Products',
           value: fmt(n, String),

@@ -63,9 +63,11 @@
               } @else {
                 <div class="thumb-placeholder">{{ p.name.charAt(0) || '?' }}</div>
               }
-              <span class="status-pill" [class.active]="p.isActive">
-                {{ p.isActive ? 'Active' : 'Inactive' }}
-              </span>
+              @if (canToggleStatus) {
+                <span class="status-pill" [class.active]="p.isActive">
+                  {{ p.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              }
             </div>
 
             <div class="product-body">

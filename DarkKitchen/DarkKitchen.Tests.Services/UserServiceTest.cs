@@ -299,6 +299,19 @@ public class UserServiceTest
     }
 
     [TestMethod]
+    public void EnsureNotSelf_WhenDifferentUser_DoesNotThrow()
+    {
+        _userService!.EnsureNotSelf("target@gmail.com", "requester@gmail.com");
+    }
+
+    [TestMethod]
+    public void EnsureNotSelf_WhenSameUser_ShouldThrowBadRequestException()
+    {
+        Assert.ThrowsException<BadRequestException>(() =>
+            _userService!.EnsureNotSelf("requester@gmail.com", "requester@gmail.com"));
+    }
+
+    [TestMethod]
     public void CreateUserWithRole_WhenValidUser_ShouldCreateUser()
     {
         _userRepositoryMock!.Setup(repository => repository.GetByEmail("validEmail@gmail.com")).Returns((User?)null);

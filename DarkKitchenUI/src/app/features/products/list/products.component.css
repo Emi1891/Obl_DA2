@@ -275,11 +275,23 @@ h3 {
   gap: 0.5rem;
 }
 
+.add-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.add-controls .add-btn {
+  flex: 1;
+  justify-content: center;
+}
+
 .stepper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-right: auto;
+  flex-shrink: 0;
 }
 
 .stepper button {
@@ -300,12 +312,23 @@ h3 {
   color: var(--dk-accent);
 }
 
-.stepper .qty {
+.stepper .qty-input {
+  width: 3rem;
+  padding: 4px 6px;
+  text-align: center;
+  background-color: var(--dk-crust);
+  color: var(--dk-text);
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
   font-family: "Josefin Sans", system-ui;
   font-weight: 700;
-  color: var(--dk-text);
-  min-width: 1.25rem;
-  text-align: center;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.stepper .qty-input:focus {
+  border-color: var(--dk-accent);
 }
 
 .cart-count {

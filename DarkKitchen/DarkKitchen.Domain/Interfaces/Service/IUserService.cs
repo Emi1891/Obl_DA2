@@ -10,4 +10,5 @@ public interface IUserService
     public List<UserResponseDto> GetUsers(UserFiltersDto filter);
     public void DeleteUser(string email);
     public UserResponseDto? GetUserById(int id);
+    public void EnsureNotSelf(string? targetEmail, string requesterEmail);
 }

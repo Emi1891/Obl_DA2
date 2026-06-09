@@ -4,12 +4,14 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
+import { CartService } from '../../../core/services/cart.service';
+import { DigitsOnlyDirective } from '../../../shared/directives/digits-only.directive';
 import { Product, ProductFilters } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, DigitsOnlyDirective],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
@@ -18,6 +20,7 @@ export class ProductsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
+  readonly cart = inject(CartService);
 
   products: Product[] = [];
   isLoading = false;
@@ -36,6 +39,7 @@ export class ProductsComponent implements OnInit {
   readonly canToggleStatus = this.perms.has('UpdateProductStatus');
   readonly canImport = this.perms.has('ImportProducts');
   readonly canSeeMostRequested = this.perms.has('GetMostPopularProducts');
+  readonly canAddToCart = this.perms.has('PlaceOrder');
 
   ngOnInit(): void {
     if (this.auth.isTokenExpired()) {
@@ -43,6 +47,54 @@ export class ProductsComponent implements OnInit {
       return;
     }
     if (this.canView) this.load();
+  }
+
+  get visibleProducts(): Product[] {
+    return this.canToggleStatus ? this.products : this.products.filter(p => p.isActive);
+  }
+
+  private readonly selectedQty = new Map<number, number>();
+  readonly maxQty = 99;
+
+  qtyFor(product: Product): number {
+    return this.selectedQty.get(product.id) ?? 1;
+  }
+
+  isSelecting(product: Product): boolean {
+    return this.selectedQty.has(product.id);
+  }
+
+  startAdding(product: Product): void {
+    this.selectedQty.set(product.id, 1);
+  }
+
+  incQty(product: Product): void {
+    this.selectedQty.set(product.id, Math.min(this.maxQty, this.qtyFor(product) + 1));
+  }
+
+  decQty(product: Product): void {
+    if (this.qtyFor(product) - 1 < 1) {
+      this.selectedQty.delete(product.id);
+    } else {
+      this.selectedQty.set(product.id, this.qtyFor(product) - 1);
+    }
+  }
+
+  setQty(product: Product, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const parsed = parseInt(input.value, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) {
+      this.selectedQty.delete(product.id);
+      return;
+    }
+    const qty = Math.min(parsed, this.maxQty);
+    this.selectedQty.set(product.id, qty);
+    input.value = String(qty);
+  }
+
+  confirm(product: Product): void {
+    this.cart.addQuantity(product, this.qtyFor(product));
+    this.selectedQty.delete(product.id);
   }
 
   load(): void {

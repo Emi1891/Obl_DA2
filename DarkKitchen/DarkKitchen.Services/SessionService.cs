@@ -19,7 +19,7 @@ public class SessionService(
     public LoginResponseDto Login(LoginDto loginDto)
     {
         var user = userRepository.GetByEmail(loginDto.email!);
-        if(user == null || !BCrypt.Net.BCrypt.Verify(loginDto.password, user.Password))
+        if(user == null || user.IsDeleted || !BCrypt.Net.BCrypt.Verify(loginDto.password, user.Password))
         {
             throw new UnauthorizedException("Invalid credentials.");
         }

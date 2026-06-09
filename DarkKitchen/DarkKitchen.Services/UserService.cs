@@ -93,6 +93,14 @@ public class UserService(IUserRepository userRepository) : IUserService
         _userRepository.Delete(user);
     }
 
+    public void EnsureNotSelf(string? targetEmail, string requesterEmail)
+    {
+        if(string.Equals(targetEmail, requesterEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BadRequestException("A user cannot modify or delete their own account.");
+        }
+    }
+
     public UserResponseDto? GetUserById(int id)
     {
         User? user = _userRepository.GetById(id);

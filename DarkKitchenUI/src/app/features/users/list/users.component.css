@@ -165,9 +165,8 @@ input:focus {
 }
 
 .user-name {
-  font-family: "Playfair Display", serif;
-  font-style: italic;
-  font-weight: 900;
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 600;
 }
 
 .muted {

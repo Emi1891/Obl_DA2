@@ -54,7 +54,7 @@
                   <span class="user-name">{{ u.name }} {{ u.surname }}</span>
                 </td>
                 <td class="muted">{{ u.email }}</td>
-                <td class="muted">{{ u.phone }}</td>
+                <td class="muted">{{ u.phone | phoneFormat }}</td>
                 <td>
                   <span [class]="roleClass(u.role)">{{ u.role }}</span>
                 </td>

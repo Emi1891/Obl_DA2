@@ -1,0 +1,114 @@
+<div class="cart-container">
+  <div class="cart-header">
+    <div class="header-text">
+      <h1>Checkout</h1>
+      <p class="subtitle">Review your order, choose delivery and confirm.</p>
+    </div>
+  </div>
+
+  @if (!canPlaceOrder) {
+    <p class="empty">You don't have permission to place orders.</p>
+  } @else {
+    @if (errorMessage) { <p class="error">{{ errorMessage }}</p> }
+
+    @if (placedOrder) {
+      <div class="confirmation">
+        <h2>Order #{{ placedOrder.id }} placed!</h2>
+        <p class="confirmation-status">Status: {{ placedOrder.status }}</p>
+        <ul class="totals">
+          <li><span>Subtotal</span><span>${{ placedOrder.subtotal.toFixed(2) }}</span></li>
+          <li><span>Discount</span><span>-${{ placedOrder.discount.toFixed(2) }}</span></li>
+          <li><span>VAT</span><span>${{ placedOrder.iva.toFixed(2) }}</span></li>
+          <li><span>Shipping</span><span>${{ placedOrder.shippingCost.toFixed(2) }}</span></li>
+          <li class="grand"><span>Total</span><span>${{ placedOrder.total.toFixed(2) }}</span></li>
+        </ul>
+        <a routerLink="/products" class="primary-btn">Browse more products</a>
+      </div>
+    } @else if (cart.isEmpty()) {
+      <div class="empty-cart">
+        <p class="empty">Your cart is empty.</p>
+        <a routerLink="/products" class="primary-btn">Browse products</a>
+      </div>
+    } @else {
+      <div class="cart-layout">
+        <section class="lines-panel">
+          <h2>Your items</h2>
+          <ul class="cart-lines">
+            @for (line of cart.items(); track line.product.id) {
+              <li class="cart-line">
+                <div class="line-thumb">
+                  @if (line.product.imageUrl?.length) {
+                    <img [src]="line.product.imageUrl![0]" [alt]="line.product.name" (error)="line.product.imageUrl = []" />
+                  } @else {
+                    <div class="thumb-placeholder">{{ line.product.name.charAt(0) || '?' }}</div>
+                  }
+                </div>
+                <div class="line-info">
+                  <span class="line-name">{{ line.product.name }}</span>
+                  <span class="line-meta">${{ line.product.price.toFixed(2) }} each</span>
+                </div>
+                <div class="stepper">
+                  <button type="button" (click)="decrease(line.product)" aria-label="Remove one">−</button>
+                  <span class="qty">{{ line.quantity }}</span>
+                  <button type="button" (click)="add(line.product)" aria-label="Add one">+</button>
+                </div>
+                <span class="line-total">${{ (line.product.price * line.quantity).toFixed(2) }}</span>
+                <button type="button" class="remove-btn" (click)="remove(line.product.id)" aria-label="Remove item">✕</button>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <aside class="summary">
+          <h2>Delivery</h2>
+
+          <form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="placeOrder()">
+            <div class="field">
+              <label for="street">Street</label>
+              <input id="street" type="text" formControlName="street" placeholder="e.g. Main St" />
+              @if (checkoutForm.controls.street.touched && checkoutForm.controls.street.invalid) {
+                <span class="field-error">Street is required.</span>
+              }
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="doorNumber">Door number</label>
+                <input id="doorNumber" type="text" formControlName="doorNumber" placeholder="e.g. 1234" />
+                @if (checkoutForm.controls.doorNumber.touched && checkoutForm.controls.doorNumber.invalid) {
+                  <span class="field-error">Door number is required.</span>
+                }
+              </div>
+              <div class="field">
+                <label for="apartment">Apartment <span class="hint">(optional)</span></label>
+                <input id="apartment" type="text" formControlName="apartment" placeholder="e.g. 5B" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="shippingTypeId">Shipping</label>
+              <select id="shippingTypeId" formControlName="shippingTypeId">
+                <option [ngValue]="null" disabled>Select a shipping option</option>
+                @for (type of shippingTypes; track type.id) {
+                  <option [ngValue]="type.id">{{ type.name }} — ${{ type.price.toFixed(2) }}</option>
+                }
+              </select>
+              @if (checkoutForm.controls.shippingTypeId.touched && checkoutForm.controls.shippingTypeId.invalid) {
+                <span class="field-error">Please choose a shipping option.</span>
+              }
+            </div>
+
+            <ul class="totals">
+              <li><span>Items</span><span>${{ cart.subtotal().toFixed(2) }}</span></li>
+              <li><span>Shipping</span><span>${{ (selectedShipping?.price ?? 0).toFixed(2) }}</span></li>
+              <li class="grand"><span>Estimated total</span><span>${{ estimatedTotal.toFixed(2) }}</span></li>
+            </ul>
+            <p class="disclaimer">Discounts and VAT are calculated when the order is confirmed.</p>
+
+            <button type="submit" class="primary-btn place-btn" [disabled]="cart.isEmpty() || isPlacingOrder">
+              {{ isPlacingOrder ? 'Placing order...' : 'Place order' }}
+            </button>
+          </form>
+        </aside>
+      </div>
+    }
+  }
+</div>

@@ -1,4 +1,5 @@
-﻿using DarkKitchen.Domain.Enums;
+﻿using System.Security.Claims;
+using DarkKitchen.Domain.Enums;
 using DarkKitchen.Domain.Interfaces.Service;
 using DarkKitchen.Models.UserDTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpPut]
     public IActionResult UpdateUser([FromBody] UserDto user)
     {
+        _userService.EnsureNotSelf(user.email, User.FindFirst(ClaimTypes.Email)!.Value);
         _userService.UpdateUser(user);
         return Ok("User updated correctly.");
     }
@@ -47,6 +49,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpDelete("{email}")]
     public IActionResult DeleteUser(string email)
     {
+        _userService.EnsureNotSelf(email, User.FindFirst(ClaimTypes.Email)!.Value);
         _userService.DeleteUser(email);
         return Ok("User deleted correctly.");
     }

@@ -37,11 +37,11 @@ export class DashboardService {
     );
   }
 
-  getProductCount(): Observable<number | null> {
-    return this.http.get<unknown[]>(`${this.apiUrl}/products`, {
+  getProductCount(activeOnly = false): Observable<number | null> {
+    return this.http.get<{ isActive: boolean }[]>(`${this.apiUrl}/products`, {
       headers: this.auth.getAuthHeaders()
     }).pipe(
-      map(p => p.length),
+      map(p => activeOnly ? p.filter(x => x.isActive).length : p.length),
       catchError(err => this.emptyAs0(err))
     );
   }

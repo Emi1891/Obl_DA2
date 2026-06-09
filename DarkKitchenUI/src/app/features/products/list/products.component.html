@@ -6,6 +6,11 @@
     </div>
 
     <div class="header-actions">
+      @if (canAddToCart) {
+        <a routerLink="/cart" class="ghost-btn">
+          Checkout @if (cart.count() > 0) { <span class="cart-count">{{ cart.count() }}</span> }
+        </a>
+      }
       @if (canSeeMostRequested) {
         <a routerLink="/products/most-requested" class="ghost-btn">Most requested</a>
       }
@@ -46,11 +51,11 @@
 
     @if (isLoading) {
       <p class="loading">Loading...</p>
-    } @else if (products.length === 0) {
+    } @else if (visibleProducts.length === 0) {
       <p class="empty">No products match the current filters.</p>
     } @else {
       <div class="products-grid">
-        @for (p of products; track trackById($index, p)) {
+        @for (p of visibleProducts; track trackById($index, p)) {
           <article class="product-card" [class.inactive]="!p.isActive">
             <div class="product-thumb">
               @if (p.imageUrl?.length) {
@@ -58,9 +63,11 @@
               } @else {
                 <div class="thumb-placeholder">{{ p.name.charAt(0) || '?' }}</div>
               }
-              <span class="status-pill" [class.active]="p.isActive">
-                {{ p.isActive ? 'Active' : 'Inactive' }}
-              </span>
+              @if (canToggleStatus) {
+                <span class="status-pill" [class.active]="p.isActive">
+                  {{ p.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              }
             </div>
 
             <div class="product-body">
@@ -75,11 +82,26 @@
               <div class="tags">
                 @if (p.productLine) { <span class="tag">{{ p.productLine }}</span> }
                 @if (p.category) { <span class="tag">{{ p.category }}</span> }
-                <span class="tag muted">{{ p.unitsSold }} sold</span>
+                @if (canSeeMostRequested) { <span class="tag muted">{{ p.unitsSold }} sold</span> }
               </div>
             </div>
 
             <div class="product-actions">
+              @if (canAddToCart && p.isActive) {
+                @if (isSelecting(p)) {
+                  <div class="add-controls">
+                    <div class="stepper">
+                      <button type="button" (click)="decQty(p)" aria-label="Decrease quantity">−</button>
+                      <input type="text" inputmode="numeric" class="qty-input" appDigitsOnly [max]="maxQty"
+                             [value]="qtyFor(p)" (change)="setQty(p, $event)" aria-label="Quantity" />
+                      <button type="button" (click)="incQty(p)" aria-label="Increase quantity">+</button>
+                    </div>
+                    <button type="button" class="primary-btn add-btn" (click)="confirm(p)">Confirm</button>
+                  </div>
+                } @else {
+                  <button type="button" class="primary-btn" (click)="startAdding(p)">Add to cart</button>
+                }
+              }
               @if (canToggleStatus) {
                 <button type="button" class="ghost-btn" (click)="toggleStatus(p)">
                   {{ p.isActive ? 'Deactivate' : 'Activate' }}

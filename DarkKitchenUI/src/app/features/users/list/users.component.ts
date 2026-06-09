@@ -5,11 +5,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserManagementService } from '../../../core/services/user-management.service';
 import { UserFilters, UserListItem } from '../../../core/models/user-management.model';
+import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PhoneFormatPipe],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })

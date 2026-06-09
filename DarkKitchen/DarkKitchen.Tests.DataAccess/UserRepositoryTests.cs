@@ -113,7 +113,7 @@ public class UserRepositoryTests
     }
 
     [TestMethod]
-    public void DeleteUser_WhenUserExists_DeletesUserFromDatabase()
+    public void DeleteUser_WhenUserExists_SoftDeletesUser()
     {
         _context.Users.Add(user!);
         _context.SaveChanges();
@@ -121,16 +121,16 @@ public class UserRepositoryTests
         _userRepository.Delete(user!);
         var result = _context.Users.FirstOrDefault(u => u.Email == validEmail);
 
-        Assert.IsNull(result);
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result.IsDeleted);
     }
 
     [TestMethod]
-    public void DeleteUser_WhenUserDoesNotExist_ThrowsException()
+    public void DeleteUser_WhenUserDoesNotExist_DoesNothing()
     {
-        Assert.ThrowsException<DbUpdateConcurrencyException>(() =>
-        {
-            _userRepository.Delete(user!);
-        });
+        _userRepository.Delete(user!);
+
+        Assert.AreEqual(0, _context!.Users.Count());
     }
 
     [TestMethod]
@@ -164,6 +164,20 @@ public class UserRepositoryTests
 
         Assert.IsNotNull(result);
         Assert.AreEqual(0, result.Count);
+    }
+
+    [TestMethod]
+    public void GetUsers_WhenUserIsSoftDeleted_ExcludesUser()
+    {
+        user!.IsDeleted = true;
+        _context.Users.Add(user!);
+        _context.Users.Add(user2!);
+        _context.SaveChanges();
+
+        var result = _userRepository.GetUsers(null, null);
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(validEmail2, result[0].Email);
     }
 
     [TestMethod]

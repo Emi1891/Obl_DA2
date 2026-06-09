@@ -7,6 +7,7 @@ interface NavItem {
   route: string;
   icon: string;
   permission?: string;
+  anyPermission?: string[];
 }
 
 @Component({
@@ -29,7 +30,14 @@ export class NavbarComponent {
     {
       label: 'Orders',
       route: '/orders',
-      icon: 'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z'
+      icon: 'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z',
+      anyPermission: ['GetMyOrders', 'GetOrdersByStatus', 'GetOrderDetails']
+    },
+    {
+      label: 'Cart',
+      route: '/cart',
+      icon: 'M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z',
+      permission: 'PlaceOrder'
     },
     {
       label: 'Users',
@@ -66,7 +74,11 @@ export class NavbarComponent {
 
   private filterByPermissions(): NavItem[] {
     const perms = new Set(this.authService.getPermissions());
-    return this.allNavItems.filter(item => !item.permission || perms.has(item.permission));
+    return this.allNavItems.filter(item => {
+      if (item.permission && !perms.has(item.permission)) return false;
+      if (item.anyPermission && !item.anyPermission.some(p => perms.has(p))) return false;
+      return true;
+    });
   }
 
   toggle() {

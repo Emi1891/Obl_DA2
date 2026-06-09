@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
 import { SalesReport } from '../../core/models/sales-report.model';
@@ -15,7 +14,6 @@ import { SalesReport } from '../../core/models/sales-report.model';
 export class SalesReportComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly orderService = inject(OrderService);
-  private readonly router = inject(Router);
 
   private readonly monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -51,9 +49,5 @@ export class SalesReportComponent implements OnInit {
 
   monthLabel(year: number, month: number): string {
     return `${this.monthNames[month - 1]} ${year}`;
-  }
-
-  back(): void {
-    this.router.navigate(['/home']);
   }
 }

@@ -82,6 +82,15 @@ public class SessionServiceTest
     }
 
     [TestMethod]
+    public void Login_WhenUserIsSoftDeleted_ThrowsUnauthorizedException()
+    {
+        user!.IsDeleted = true;
+        userRepositoryMock!.Setup(r => r.GetByEmail(email)).Returns(user!);
+
+        Assert.ThrowsException<UnauthorizedException>(() => sessionService!.Login(loginDto));
+    }
+
+    [TestMethod]
     public void Login_WithValidCredentials_AddsPermissionClaimsToToken()
     {
         userRepositoryMock!.Setup(r => r.GetByEmail(email)).Returns(user!);

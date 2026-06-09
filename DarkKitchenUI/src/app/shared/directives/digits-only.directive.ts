@@ -1,10 +1,5 @@
 import { Directive, ElementRef, HostListener, Input, inject } from '@angular/core';
 
-/**
- * Keeps an input's value restricted to digits only, stripping any other
- * character (".", ",", letters, etc.) as it is typed, pasted or dropped.
- * When a `max` is provided, the value is also capped to it.
- */
 @Directive({
   selector: '[appDigitsOnly]',
   standalone: true

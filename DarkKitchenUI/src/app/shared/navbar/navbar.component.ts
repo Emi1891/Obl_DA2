@@ -7,6 +7,7 @@ interface NavItem {
   route: string;
   icon: string;
   permission?: string;
+  anyPermission?: string[];
 }
 
 @Component({
@@ -29,7 +30,8 @@ export class NavbarComponent {
     {
       label: 'Orders',
       route: '/orders',
-      icon: 'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z'
+      icon: 'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z',
+      anyPermission: ['GetMyOrders', 'GetOrdersByStatus', 'GetOrderDetails']
     },
     {
       label: 'Cart',
@@ -76,7 +78,11 @@ export class NavbarComponent {
 
   private filterByPermissions(): NavItem[] {
     const perms = new Set(this.authService.getPermissions());
-    return this.allNavItems.filter(item => !item.permission || perms.has(item.permission));
+    return this.allNavItems.filter(item => {
+      if (item.permission && !perms.has(item.permission)) return false;
+      if (item.anyPermission && !item.anyPermission.some(p => perms.has(p))) return false;
+      return true;
+    });
   }
 
   toggle() {

@@ -33,3 +33,15 @@ export interface ShippingType {
   name: string;
   price: number;
 }
+
+export interface OrderFilters {
+  dateFrom?: string;
+  dateTo?: string;
+  status?: string;
+  address?: string;
+}
+
+export interface UpdateOrderStatusResponse {
+  message: string;
+  updatedAt: string;
+}

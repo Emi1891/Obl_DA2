@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ShippingTypeService } from '../../core/services/shipping-type.service';
 import { OrderService } from '../../core/services/order.service';
@@ -21,7 +21,6 @@ export class CartComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly shippingTypeService = inject(ShippingTypeService);
   private readonly orderService = inject(OrderService);
-  private readonly router = inject(Router);
   readonly cart = inject(CartService);
 
   shippingTypes: ShippingType[] = [];
@@ -123,9 +122,5 @@ export class CartComponent implements OnInit {
 
   dismissConfirmation(): void {
     this.placedOrder = null;
-  }
-
-  back(): void {
-    this.router.navigate(['/home']);
   }
 }

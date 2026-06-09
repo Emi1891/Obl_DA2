@@ -65,4 +65,11 @@ public class UserTest
     {
         Assert.AreEqual(role, user!.Role);
     }
+
+    [TestMethod]
+    public void User_WhenMarkedDeleted_IsDeletedIsTrue()
+    {
+        user!.IsDeleted = true;
+        Assert.IsTrue(user.IsDeleted);
+    }
 }

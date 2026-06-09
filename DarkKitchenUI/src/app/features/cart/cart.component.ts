@@ -65,7 +65,7 @@ export class CartComponent implements OnInit {
   }
 
   add(product: Product): void {
-    this.cart.add(product);
+    this.cart.addQuantity(product, 1);
   }
 
   decrease(product: Product): void {

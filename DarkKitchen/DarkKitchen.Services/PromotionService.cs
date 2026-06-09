@@ -67,11 +67,6 @@ public class PromotionService(IPromotionRepository promotionRepository, IAuditSe
 
     public List<PromotionResponseDto> GetPromotions(PromotionFiltersDto filter)
     {
-        if(filter.Date == null)
-        {
-            throw new BadRequestException("Date is required.");
-        }
-
         var promotions = _promotionRepository.GetPromotions(filter.Date, filter.ProductLine, filter.ProductName);
 
         return promotions.Select(p => new PromotionResponseDto(p.Id, p.Name, p.DiscountPercentage, p.DateFrom, p.DateTo, p.Products.Select(x => x.Code).ToList())).ToList();

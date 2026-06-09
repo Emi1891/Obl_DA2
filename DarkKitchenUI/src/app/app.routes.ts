@@ -56,6 +56,9 @@ export const routes: Routes = [
     path: 'orders',
     loadComponent: () =>
       import('./features/orders/orders.component').then(m => m.OrdersComponent)
+    path: 'audit',
+    loadComponent: () =>
+      import('./features/audit/audit.component').then(m => m.AuditComponent)
   },
   {
     path: 'users',
@@ -71,5 +74,25 @@ export const routes: Routes = [
     path: 'users/:email/edit',
     loadComponent: () =>
       import('./features/users/form/user-form.component').then(m => m.UserFormComponent)
+  },
+  {
+    path: 'promotions',
+    loadComponent: () =>
+      import('./features/promotions/list/promotions.component').then(m => m.PromotionsComponent)
+  },
+  {
+    path: 'promotions/new',
+    loadComponent: () =>
+      import('./features/promotions/form/promotion-form.component').then(m => m.PromotionFormComponent)
+  },
+  {
+    path: 'promotions/:id/edit',
+    loadComponent: () =>
+      import('./features/promotions/form/promotion-form.component').then(m => m.PromotionFormComponent)
+  },
+  {
+    path: 'promotions/:id/products',
+    loadComponent: () =>
+      import('./features/promotions/products/promotion-products.component').then(m => m.PromotionProductsComponent)
   }
 ];

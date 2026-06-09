@@ -1,0 +1,189 @@
+.report-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.5rem;
+  transition: color 0.15s;
+}
+
+.back-link:hover {
+  color: var(--dk-text);
+}
+
+h1 {
+  font-size: 1.75rem;
+  color: var(--dk-text);
+}
+
+.subtitle {
+  color: var(--dk-subtext);
+  font-size: 0.95rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+}
+
+label {
+  color: var(--dk-subtext);
+  font-size: 0.85rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+input,
+select {
+  padding: 9px 12px;
+  background-color: var(--dk-crust);
+  color: var(--dk-text);
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: system-ui, sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+  color-scheme: dark;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--dk-accent);
+}
+
+.primary-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background-color: var(--dk-accent);
+  color: var(--dk-crust);
+  transition: background-color 0.15s;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background-color: var(--dk-accent-hover);
+}
+
+.primary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.table-wrapper {
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  overflow: auto;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Josefin Sans", system-ui;
+}
+
+.audit-table thead th {
+  text-align: left;
+  padding: 0.9rem 1.25rem;
+  color: var(--dk-subtext);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--dk-border);
+  white-space: nowrap;
+}
+
+.audit-table tbody td {
+  padding: 0.9rem 1.25rem;
+  color: var(--dk-text);
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--dk-border);
+  vertical-align: top;
+}
+
+.audit-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.audit-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.date {
+  white-space: nowrap;
+  color: var(--dk-subtext);
+}
+
+.id {
+  color: var(--dk-subtext);
+  white-space: nowrap;
+}
+
+.user {
+  color: var(--dk-subtext);
+  white-space: nowrap;
+}
+
+.badge {
+  background-color: rgba(218, 165, 32, 0.12);
+  color: var(--dk-accent-2);
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.empty,
+.loading {
+  color: var(--dk-subtext);
+  text-align: center;
+  padding: 2rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+.error {
+  color: var(--dk-error);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: rgba(255, 111, 97, 0.1);
+  border: 1px solid var(--dk-error);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+@media (max-width: 720px) {
+  .report-container {
+    padding: 2rem 1.25rem;
+  }
+}

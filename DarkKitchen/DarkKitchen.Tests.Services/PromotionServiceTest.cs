@@ -182,10 +182,14 @@ public class PromotionServiceTest
     }
 
     [TestMethod]
-    public void GetPromotions_WhenDateIsNull_ThrowsBadRequestException()
+    public void GetPromotions_WhenDateIsNull_ReturnsAllPromotions()
     {
-        Assert.ThrowsException<BadRequestException>(() =>
-            promotionService!.GetPromotions(new PromotionFiltersDto()));
+        promotionRepositoryMock!.Setup(r => r.GetPromotions(null, null, null)).Returns([promotionEntity!]);
+
+        var result = promotionService!.GetPromotions(new PromotionFiltersDto());
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Count);
     }
 
     [TestMethod]

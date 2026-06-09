@@ -19,13 +19,14 @@ export class CartService {
     return this.lines().find(l => l.product.id === productId)?.quantity ?? 0;
   }
 
-  add(product: Product): void {
+  addQuantity(product: Product, quantity: number): void {
+    if (quantity <= 0) return;
     this.lines.update(lines => {
       const existing = lines.find(l => l.product.id === product.id);
       if (existing) {
-        return lines.map(l => l.product.id === product.id ? { ...l, quantity: l.quantity + 1 } : l);
+        return lines.map(l => l.product.id === product.id ? { ...l, quantity: l.quantity + quantity } : l);
       }
-      return [...lines, { product, quantity: 1 }];
+      return [...lines, { product, quantity }];
     });
   }
 

@@ -130,8 +130,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             b.HasIndex(st => st.Name).IsUnique();
             b.HasData(
                 new ShippingType { Id = 1, Name = "Express", Price = 250 },
-                new ShippingType { Id = 2, Name = "En el día", Price = 200 },
-                new ShippingType { Id = 3, Name = "Día siguiente", Price = 180 });
+                new ShippingType { Id = 2, Name = "Same day", Price = 200 },
+                new ShippingType { Id = 3, Name = "Next day", Price = 180 });
         });
     }
 }

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
+import { formatPhoneDigits } from '../../../shared/phone';
 
 @Component({
   selector: 'app-register',
@@ -38,12 +39,7 @@ export class RegisterComponent {
 
   onPhoneInput(event: Event) {
     const digits = (event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 9);
-    let formatted = '';
-    for (let i = 0; i < digits.length; i++) {
-      if (i === 3 || i === 6) formatted += ' ';
-      formatted += digits[i];
-    }
-    this.form.get('phone')?.setValue(formatted, { emitEvent: false });
+    this.form.get('phone')?.setValue(formatPhoneDigits(digits), { emitEvent: false });
   }
 
   onSubmit() {

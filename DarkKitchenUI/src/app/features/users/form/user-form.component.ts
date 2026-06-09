@@ -10,6 +10,7 @@ import {
   UserListItem,
   UserRole
 } from '../../../core/models/user-management.model';
+import { formatPhoneDigits, toLocalPhone } from '../../../shared/phone';
 
 @Component({
   selector: 'app-user-form',
@@ -61,7 +62,7 @@ export class UserFormComponent implements OnInit {
           name: navState.user.name,
           surname: navState.user.surname,
           email: navState.user.email,
-          phone: this.toDisplayPhone(navState.user.phone),
+          phone: toLocalPhone(navState.user.phone),
           role: navState.user.role
         });
       } else {
@@ -79,22 +80,7 @@ export class UserFormComponent implements OnInit {
 
   onPhoneInput(event: Event): void {
     const digits = (event.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 9);
-    this.form.get('phone')?.setValue(this.formatPhoneDigits(digits), { emitEvent: false });
-  }
-
-  private formatPhoneDigits(digits: string): string {
-    let formatted = '';
-    for (let i = 0; i < digits.length; i++) {
-      if (i === 3 || i === 6) formatted += ' ';
-      formatted += digits[i];
-    }
-    return formatted;
-  }
-
-  private toDisplayPhone(stored: string): string {
-    let digits = stored.replace(/\D/g, '');
-    if (digits.startsWith('598')) digits = digits.slice(3);
-    return this.formatPhoneDigits(digits.slice(0, 9));
+    this.form.get('phone')?.setValue(formatPhoneDigits(digits), { emitEvent: false });
   }
 
   onSubmit(): void {

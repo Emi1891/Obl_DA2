@@ -153,6 +153,7 @@ h1 {
 
 .line-meta {
   color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
   font-size: 0.78rem;
 }
 

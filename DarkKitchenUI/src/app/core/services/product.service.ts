@@ -12,12 +12,13 @@ import {
   ImportProductsResponse,
   DateRange
 } from '../models/product.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private readonly apiUrl = 'https://localhost:7134/api/products';
+  private readonly apiUrl = `${environment.apiUrl}/products`;
 
   getProducts(filters: ProductFilters = {}): Observable<Product[]> {
     let params = new HttpParams();

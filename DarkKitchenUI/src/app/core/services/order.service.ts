@@ -10,12 +10,13 @@ import {
   OrderFilters,
   UpdateOrderStatusResponse
 } from '../models/order.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private readonly apiUrl = 'https://localhost:7134/api/orders';
+  private readonly apiUrl = `${environment.apiUrl}/orders`;
 
   getSalesReport(): Observable<SalesReport> {
     return this.http.get<SalesReport>(`${this.apiUrl}/sales-report`, {

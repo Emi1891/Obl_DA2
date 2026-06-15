@@ -9,12 +9,13 @@ import {
   UpdateUserPayload,
   UserFilters
 } from '../models/user-management.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserManagementService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private readonly apiUrl = 'https://localhost:7134/api/users';
+  private readonly apiUrl = `${environment.apiUrl}/users`;
 
   getUsers(filters: UserFilters = {}): Observable<UserListItem[]> {
     let params = new HttpParams();

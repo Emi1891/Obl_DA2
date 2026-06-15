@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { LoginRequest, LoginResponse } from '../models/user.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly apiUrl = 'https://localhost:7134/api';
+  private readonly apiUrl = environment.apiUrl;
   private readonly tokenKey = 'token';
 
   login(credentials: LoginRequest) {

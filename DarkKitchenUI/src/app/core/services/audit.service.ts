@@ -4,12 +4,13 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { AuditRecord, AuditFilter } from '../models/audit.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuditService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private readonly apiUrl = 'https://localhost:7134/api/audit';
+  private readonly apiUrl = `${environment.apiUrl}/audit`;
 
   getAuditRecords(filter: AuditFilter): Observable<AuditRecord[]> {
     let params = new HttpParams()

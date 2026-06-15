@@ -4,12 +4,13 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Promotion, PromotionFilters, PromotionRequest } from '../models/promotion.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PromotionService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private readonly apiUrl = 'https://localhost:7134/api/promotions';
+  private readonly apiUrl = `${environment.apiUrl}/promotions`;
 
   getAll(filters: PromotionFilters = {}): Observable<Promotion[]> {
     let params = new HttpParams();

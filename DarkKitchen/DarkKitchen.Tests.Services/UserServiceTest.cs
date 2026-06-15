@@ -379,6 +379,33 @@ public class UserServiceTest
     }
 
     [TestMethod]
+    public void CreateUser_WhenEmailExistsButDeleted_ShouldReactivateUser()
+    {
+        var deletedUser = new User
+        {
+            Name = "OldName",
+            Surname = "OldSurname",
+            Email = _validUser.email!,
+            Phone = "+59899000000",
+            Password = "oldHashedPassword",
+            Role = Role.Admin,
+            IsDeleted = true,
+        };
+
+        _userRepositoryMock!
+            .Setup(repository => repository.GetByEmail(_validUser.email!))
+            .Returns(deletedUser);
+        _userRepositoryMock!
+            .Setup(repository => repository.Update(It.IsAny<User>()));
+
+        _userService!.CreateUser(_validUser);
+
+        _userRepositoryMock!.Verify(repository => repository.Update(
+            It.Is<User>(u => !u.IsDeleted && u.Name == _validUser.name && u.Role == Role.Admin)), Times.Once);
+        _userRepositoryMock!.Verify(repository => repository.Add(It.IsAny<User>()), Times.Never);
+    }
+
+    [TestMethod]
     public void CreateUser_WhenPhoneHasInvalidFormat_ShouldThrowBadRequestException()
     {
         _validUser = _validUser with { phone = "099123456" };

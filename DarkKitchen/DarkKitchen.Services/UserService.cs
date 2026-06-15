@@ -16,9 +16,22 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         ValidateUserFields(newUser.name, newUser.surname, newUser.email, newUser.password, newUser.phone);
 
-        if(_userRepository.GetByEmail(newUser.email!) != null)
+        var existing = _userRepository.GetByEmail(newUser.email!);
+
+        if(existing != null)
         {
-            throw new BadRequestException("Email already in use.");
+            if(!existing.IsDeleted)
+            {
+                throw new BadRequestException("Email already in use.");
+            }
+
+            existing.Name = newUser.name!;
+            existing.Surname = newUser.surname!;
+            existing.Phone = newUser.phone!;
+            existing.Password = BCrypt.Net.BCrypt.HashPassword(newUser.password);
+            existing.IsDeleted = false;
+            _userRepository.Update(existing);
+            return;
         }
 
         var role = _userRepository.HasAny() ? Role.Client : Role.Admin;

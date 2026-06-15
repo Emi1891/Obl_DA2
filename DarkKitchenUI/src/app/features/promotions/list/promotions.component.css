@@ -13,6 +13,12 @@
   flex-wrap: wrap;
 }
 
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 h1 {
   font-size: 1.75rem;
   color: var(--dk-text);

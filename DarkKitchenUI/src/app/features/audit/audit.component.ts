@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuditService } from '../../core/services/audit.service';
 import { AuditRecord } from '../../core/models/audit.model';
 import { MONTH_NAMES, oneMonthAgoRange } from '../../shared/utils/date';
@@ -16,7 +15,6 @@ import { MONTH_NAMES, oneMonthAgoRange } from '../../shared/utils/date';
 export class AuditComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auditService = inject(AuditService);
-  private readonly router = inject(Router);
 
   readonly entityNames = ['Product', 'Promotion'];
 
@@ -77,7 +75,4 @@ export class AuditComponent implements OnInit {
     return `${month} ${day}, ${year}, ${hours}:${minutes}`;
   }
 
-  back(): void {
-    this.router.navigate(['/home']);
-  }
 }

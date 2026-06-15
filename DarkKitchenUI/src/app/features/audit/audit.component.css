@@ -1,24 +1,22 @@
-.report-container {
+.audit-container {
   padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.back-link {
-  background: none;
-  border: none;
-  color: var(--dk-subtext);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 0.5rem;
-  transition: color 0.15s;
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.back-link:hover {
-  color: var(--dk-text);
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 h1 {
@@ -51,7 +49,7 @@ h1 {
 
 label {
   color: var(--dk-subtext);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-family: "Josefin Sans", system-ui;
 }
 
@@ -75,15 +73,17 @@ select:focus {
 }
 
 .primary-btn {
-  padding: 0.6rem 1.25rem;
+  padding: 0.55rem 1rem;
   border-radius: 8px;
   font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   background-color: var(--dk-accent);
   color: var(--dk-crust);
+  display: inline-flex;
+  align-items: center;
   transition: background-color 0.15s;
 }
 
@@ -109,31 +109,31 @@ select:focus {
   font-family: "Josefin Sans", system-ui;
 }
 
+.audit-table thead {
+  background-color: var(--dk-crust);
+}
+
 .audit-table thead th {
   text-align: left;
-  padding: 0.9rem 1.25rem;
+  padding: 0.85rem 1rem;
   color: var(--dk-subtext);
   font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--dk-border);
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
 .audit-table tbody td {
-  padding: 0.9rem 1.25rem;
+  padding: 0.9rem 1rem;
   color: var(--dk-text);
   font-size: 0.9rem;
-  border-bottom: 1px solid var(--dk-border);
+  border-top: 1px solid var(--dk-border);
   vertical-align: top;
 }
 
-.audit-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
 .audit-table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(255, 111, 97, 0.04);
 }
 
 .date {
@@ -183,7 +183,13 @@ select:focus {
 }
 
 @media (max-width: 720px) {
-  .report-container {
+  .audit-container {
     padding: 2rem 1.25rem;
+  }
+
+  .audit-table th,
+  .audit-table td {
+    padding: 0.6rem;
+    font-size: 0.8rem;
   }
 }

@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from './auth.service';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
-  private readonly apiUrl = 'https://localhost:7134/api';
+  private readonly apiUrl = environment.apiUrl;
 
   private readonly dateFrom = '2000-01-01T00:00:00';
   private readonly dateTo = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();

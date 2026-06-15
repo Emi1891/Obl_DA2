@@ -65,10 +65,6 @@ export class OrdersComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canList) this.load();
   }
 

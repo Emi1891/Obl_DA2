@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
-import { DashboardService } from './dashboard.service';
+import { DashboardService } from '../../core/services/dashboard.service';
 import { StatsGridComponent } from './stats-grid/stats-grid.component';
 import { Stat } from './stat-card/stat-card.component';
 
@@ -36,11 +36,6 @@ export class HomeComponent implements OnInit {
   isLoading = true;
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-
     const perms = new Set(this.auth.getPermissions());
     const calls: Observable<Stat>[] = [];
 

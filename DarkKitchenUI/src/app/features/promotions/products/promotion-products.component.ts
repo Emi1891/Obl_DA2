@@ -1,11 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { PromotionService } from '../../../core/services/promotion.service';
 import { ProductService } from '../../../core/services/product.service';
 import { Promotion } from '../../../core/models/promotion.model';
 import { Product } from '../../../core/models/product.model';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-promotion-products',
@@ -15,7 +15,6 @@ import { Product } from '../../../core/models/product.model';
   styleUrl: './promotion-products.component.css'
 })
 export class PromotionProductsComponent implements OnInit {
-  private readonly auth = inject(AuthService);
   private readonly promotionService = inject(PromotionService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
@@ -31,11 +30,6 @@ export class PromotionProductsComponent implements OnInit {
   errorMessage = '';
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-
     const idParam = this.route.snapshot.paramMap.get('id');
     if (!idParam) {
       this.router.navigate(['/promotions']);
@@ -91,11 +85,7 @@ export class PromotionProductsComponent implements OnInit {
     this.promotionService.updateProducts(this.promotionId, [...this.selectedIds]).subscribe({
       next: () => this.router.navigate(['/promotions']),
       error: err => {
-        const e = err as { error?: { message?: string } | string };
-        const msg = typeof e.error === 'string'
-          ? e.error.replace(/^[^:]+:\s*/, '')
-          : e.error?.message?.replace(/^[^:]+:\s*/, '') ?? null;
-        this.errorMessage = msg ?? 'Could not update promotion products.';
+        this.errorMessage = extractError(err) ?? 'Could not update promotion products.';
         this.isSubmitting = false;
       }
     });

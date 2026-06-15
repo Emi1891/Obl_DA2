@@ -41,10 +41,6 @@ export class CartComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canPlaceOrder) this.loadShippingTypes();
   }
 

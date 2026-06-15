@@ -42,10 +42,6 @@ export class ProductsComponent implements OnInit {
   readonly canAddToCart = this.perms.has('PlaceOrder');
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canView) this.load();
   }
 

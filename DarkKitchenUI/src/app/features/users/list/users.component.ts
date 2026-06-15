@@ -37,10 +37,6 @@ export class UsersComponent implements OnInit {
   readonly canDelete = this.perms.has('DeleteUser');
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canView) this.load();
   }
 

@@ -36,10 +36,6 @@ export class PromotionsComponent implements OnInit {
   readonly canEditProducts = this.perms.has('UpdatePromotionProducts');
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canView) this.load();
   }
 

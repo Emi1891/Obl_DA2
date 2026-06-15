@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { ImporterInfo } from '../../../core/models/product.model';
 
@@ -14,7 +13,6 @@ import { ImporterInfo } from '../../../core/models/product.model';
   styleUrl: './product-importer.component.css'
 })
 export class ProductImporterComponent implements OnInit {
-  private readonly auth = inject(AuthService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
 
@@ -33,10 +31,6 @@ export class ProductImporterComponent implements OnInit {
   importerSuccessMessage = '';
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     this.loadImporters();
   }
 

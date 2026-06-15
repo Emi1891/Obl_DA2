@@ -36,7 +36,9 @@ export class HomeComponent implements OnInit {
           label: 'Pending Orders',
           value: fmt(n, String),
           icon: ICONS.calendar,
-          description: 'Orders received and waiting to be prepared in the kitchen.'
+          description: 'Orders received and waiting to be prepared in the kitchen.',
+          link: '/orders',
+          linkLabel: 'Go to Orders'
         }))
       ));
       calls.push(this.dashboard.getOrderCountByStatus('OnItsWay').pipe(
@@ -44,7 +46,9 @@ export class HomeComponent implements OnInit {
           label: 'In Transit',
           value: fmt(n, String),
           icon: ICONS.truck,
-          description: 'Orders currently on their way to customers.'
+          description: 'Orders currently on their way to customers.',
+          link: '/orders',
+          linkLabel: 'Go to Orders'
         }))
       ));
     }
@@ -55,7 +59,9 @@ export class HomeComponent implements OnInit {
           label: 'My Orders',
           value: fmt(n, String),
           icon: ICONS.list,
-          description: 'Total orders you have placed through the platform.'
+          description: 'Total orders you have placed through the platform.',
+          link: '/orders',
+          linkLabel: 'Go to My Orders'
         }))
       ));
     }
@@ -66,7 +72,9 @@ export class HomeComponent implements OnInit {
           label: 'Products',
           value: fmt(n, String),
           icon: ICONS.products,
-          description: 'Products currently listed in the catalog.'
+          description: 'Products currently listed in the catalog.',
+          link: '/products',
+          linkLabel: 'Go to Products'
         }))
       ));
     }
@@ -77,7 +85,9 @@ export class HomeComponent implements OnInit {
           label: 'Registered Users',
           value: fmt(n, String),
           icon: ICONS.users,
-          description: 'Total users registered across all roles in the system.'
+          description: 'Total users registered across all roles in the system.',
+          link: '/users',
+          linkLabel: 'Go to Users'
         }))
       ));
     }
@@ -88,7 +98,9 @@ export class HomeComponent implements OnInit {
           label: 'Total Revenue',
           value: fmt(n, v => `$${v.toFixed(2)}`),
           icon: ICONS.revenue,
-          description: 'Cumulative revenue generated from all completed orders.'
+          description: 'Cumulative revenue generated from all completed orders.',
+          link: '/sales-report',
+          linkLabel: 'Go to Sales Report'
         }))
       ));
     }
@@ -99,19 +111,22 @@ export class HomeComponent implements OnInit {
           label: 'Active Promotions',
           value: fmt(n, String),
           icon: ICONS.promotions,
-          description: 'Promotions currently live and visible to customers.'
+          description: 'Promotions currently live and visible to customers.',
+          link: '/promotions',
+          linkLabel: 'Go to Promotions'
         }))
       ));
     }
 
-    if (perms.has('GetShippingTypes')) {
+    if (perms.has('UpdateShippingType')) {
       calls.push(this.dashboard.getShippingTypeCount().pipe(
         map(n => ({
           label: 'Shipping Types',
           value: fmt(n, String),
           icon: ICONS.truck,
           description: 'Delivery methods available at checkout for customers.',
-          link: '/shipping-types'
+          link: '/shipping-types',
+          linkLabel: 'Go to Shipping Types'
         }))
       ));
     }

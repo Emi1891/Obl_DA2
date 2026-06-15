@@ -10,6 +10,6 @@
   <span class="stat-value">{{ stat.value }}</span>
   <p class="stat-description">{{ stat.description }}</p>
   @if (stat.link) {
-    <a [routerLink]="stat.link" class="stat-manage-btn">Manage →</a>
+    <a [routerLink]="stat.link" class="stat-manage-btn">{{ stat.linkLabel ?? 'Go to page' }} →</a>
   }
 </div>

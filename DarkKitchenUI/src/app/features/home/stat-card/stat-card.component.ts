@@ -7,6 +7,7 @@ export interface Stat {
   icon: string;
   description: string;
   link?: string;
+  linkLabel?: string;
 }
 
 @Component({

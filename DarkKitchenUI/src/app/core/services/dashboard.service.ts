@@ -75,4 +75,13 @@ export class DashboardService {
       catchError(err => this.emptyAs0(err))
     );
   }
+
+  getShippingTypeCount(): Observable<number | null> {
+    return this.http.get<unknown[]>(`${this.apiUrl}/shippingtypes`, {
+      headers: this.auth.getAuthHeaders()
+    }).pipe(
+      map(t => t.length),
+      catchError(err => this.emptyAs0(err))
+    );
+  }
 }

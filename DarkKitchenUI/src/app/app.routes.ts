@@ -115,5 +115,23 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/promotions/products/promotion-products.component').then(m => m.PromotionProductsComponent)
+  },
+  {
+    path: 'shipping-types',
+    canActivate: [authGuard, permissionGuard('GetShippingTypes')],
+    loadComponent: () =>
+      import('./features/shipping-types/list/shipping-types.component').then(m => m.ShippingTypesComponent)
+  },
+  {
+    path: 'shipping-types/new',
+    canActivate: [authGuard, permissionGuard('CreateShippingType')],
+    loadComponent: () =>
+      import('./features/shipping-types/form/shipping-type-form.component').then(m => m.ShippingTypeFormComponent)
+  },
+  {
+    path: 'shipping-types/:id/edit',
+    canActivate: [authGuard, permissionGuard('UpdateShippingType')],
+    loadComponent: () =>
+      import('./features/shipping-types/form/shipping-type-form.component').then(m => m.ShippingTypeFormComponent)
   }
 ];

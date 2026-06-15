@@ -118,7 +118,7 @@ export const routes: Routes = [
   },
   {
     path: 'shipping-types',
-    canActivate: [authGuard, permissionGuard('GetShippingTypes')],
+    canActivate: [authGuard, permissionGuard('UpdateShippingType')],
     loadComponent: () =>
       import('./features/shipping-types/list/shipping-types.component').then(m => m.ShippingTypesComponent)
   },

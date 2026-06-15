@@ -53,7 +53,10 @@ export class ProductFormComponent implements OnInit {
     return this.form.get('imageUrl') as FormArray<FormControl<string>>;
   }
 
+  readonly maxImages = 3;
+
   addImage(value = ''): void {
+    if (this.images.length >= this.maxImages) return;
     this.images.push(this.fb.nonNullable.control(value));
   }
 

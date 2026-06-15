@@ -58,6 +58,12 @@ export class NavbarComponent {
       icon: ICONS.promotions
     },
     {
+      label: 'Shipping Types',
+      route: '/shipping-types',
+      icon: ICONS.truck,
+      permission: 'UpdateShippingType'
+    },
+    {
       label: 'Audit',
       route: '/audit',
       icon: ICONS.audit,
@@ -68,12 +74,6 @@ export class NavbarComponent {
       route: '/sales-report',
       icon: ICONS.salesReport,
       permission: 'GetSalesReport'
-    },
-    {
-      label: 'Shipping Types',
-      route: '/shipping-types',
-      icon: ICONS.truck,
-      permission: 'GetShippingTypes'
     },
   ];
 

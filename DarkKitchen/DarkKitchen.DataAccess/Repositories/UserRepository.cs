@@ -5,6 +5,8 @@ namespace DarkKitchen.DataAccess.Repositories;
 
 public class UserRepository(AppDbContext context) : IUserRepository
 {
+    public bool HasAny() => context.Users.Any();
+
     public void Add(User user)
     {
         context.Users.Add(user);

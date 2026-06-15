@@ -42,12 +42,51 @@ public class UserServiceTest
             .Setup(repository => repository.GetByEmail(_validUser.email!))
             .Returns((User?)null);
         _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(true);
+        _userRepositoryMock!
             .Setup(repository => repository.Add(It.IsAny<User>()));
 
         _userService!.CreateUser(_validUser);
 
         _userRepositoryMock!
             .Verify(repository => repository.Add(It.IsAny<User>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateUser_WhenNoUsersExist_ShouldCreateAdmin()
+    {
+        _userRepositoryMock!
+            .Setup(repository => repository.GetByEmail(_validUser.email!))
+            .Returns((User?)null);
+        _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(false);
+        _userRepositoryMock!
+            .Setup(repository => repository.Add(It.IsAny<User>()));
+
+        _userService!.CreateUser(_validUser);
+
+        _userRepositoryMock!
+            .Verify(repository => repository.Add(It.Is<User>(u => u.Role == Role.Admin)), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateUser_WhenUsersExist_ShouldCreateClient()
+    {
+        _userRepositoryMock!
+            .Setup(repository => repository.GetByEmail(_validUser.email!))
+            .Returns((User?)null);
+        _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(true);
+        _userRepositoryMock!
+            .Setup(repository => repository.Add(It.IsAny<User>()));
+
+        _userService!.CreateUser(_validUser);
+
+        _userRepositoryMock!
+            .Verify(repository => repository.Add(It.Is<User>(u => u.Role == Role.Client)), Times.Once);
     }
 
     [TestMethod]
@@ -355,6 +394,9 @@ public class UserServiceTest
         _userRepositoryMock!
             .Setup(repository => repository.GetByEmail(userWithNullPhone.email!))
             .Returns((User?)null);
+        _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(true);
         _userRepositoryMock!
             .Setup(repository => repository.Add(It.IsAny<User>()));
 

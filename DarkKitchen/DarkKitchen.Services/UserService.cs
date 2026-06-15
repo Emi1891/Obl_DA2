@@ -21,6 +21,8 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new BadRequestException("Email already in use.");
         }
 
+        var role = _userRepository.HasAny() ? Role.Client : Role.Admin;
+
         var user = new User
         {
             Name = newUser.name,
@@ -28,7 +30,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             Email = newUser.email,
             Phone = newUser.phone,
             Password = BCrypt.Net.BCrypt.HashPassword(newUser.password),
-            Role = Role.Client,
+            Role = role,
         };
 
         _userRepository.Add(user);

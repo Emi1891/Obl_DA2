@@ -4,6 +4,7 @@ namespace DarkKitchen.Domain.Interfaces.Repository;
 
 public interface IUserRepository
 {
+    public bool HasAny();
     public User? GetByEmail(string email);
     public User? GetById(int id);
     public void Add(User user);

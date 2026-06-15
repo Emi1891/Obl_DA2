@@ -16,7 +16,7 @@ public class CsvProductImporter : IProductImporter
         using var reader = new StreamReader(source);
 
         var headerLine = reader.ReadLine();
-        if (headerLine == null)
+        if(headerLine == null)
         {
             throw new BadRequestException("CSV content was empty.");
         }
@@ -28,10 +28,10 @@ public class CsvProductImporter : IProductImporter
         string? line;
         var lineNumber = 1;
 
-        while ((line = reader.ReadLine()) != null)
+        while((line = reader.ReadLine()) != null)
         {
             lineNumber++;
-            if (string.IsNullOrWhiteSpace(line))
+            if(string.IsNullOrWhiteSpace(line))
             {
                 continue;
             }
@@ -52,7 +52,7 @@ public class CsvProductImporter : IProductImporter
         var name = GetField(fields, columnIndex, "name", lineNumber);
         var priceText = GetField(fields, columnIndex, "price", lineNumber);
 
-        if (!decimal.TryParse(priceText, NumberStyles.Number, CultureInfo.InvariantCulture, out var price))
+        if(!decimal.TryParse(priceText, NumberStyles.Number, CultureInfo.InvariantCulture, out var price))
         {
             throw new BadRequestException($"Invalid price value '{priceText}' on line {lineNumber}.");
         }
@@ -82,12 +82,12 @@ public class CsvProductImporter : IProductImporter
         string columnName,
         int lineNumber)
     {
-        if (!columnIndex.TryGetValue(columnName, out var idx))
+        if(!columnIndex.TryGetValue(columnName, out var idx))
         {
             throw new BadRequestException($"Missing required column '{columnName}' in CSV header.");
         }
 
-        if (idx >= fields.Count || string.IsNullOrWhiteSpace(fields[idx]))
+        if(idx >= fields.Count || string.IsNullOrWhiteSpace(fields[idx]))
         {
             throw new BadRequestException($"Missing required value for '{columnName}' on line {lineNumber}.");
         }
@@ -100,7 +100,7 @@ public class CsvProductImporter : IProductImporter
         IReadOnlyDictionary<string, int> columnIndex,
         string columnName)
     {
-        if (!columnIndex.TryGetValue(columnName, out var idx) || idx >= fields.Count)
+        if(!columnIndex.TryGetValue(columnName, out var idx) || idx >= fields.Count)
         {
             return null;
         }
@@ -111,10 +111,10 @@ public class CsvProductImporter : IProductImporter
     private static Dictionary<string, int> BuildColumnIndex(IList<string> headers)
     {
         var index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        for (var i = 0; i < headers.Count; i++)
+        for(var i = 0; i < headers.Count; i++)
         {
             var name = headers[i].Trim().ToLowerInvariant();
-            if (!string.IsNullOrEmpty(name))
+            if(!string.IsNullOrEmpty(name))
             {
                 index.TryAdd(name, i);
             }
@@ -128,24 +128,24 @@ public class CsvProductImporter : IProductImporter
         var fields = new List<string>();
         var i = 0;
 
-        while (i <= line.Length)
+        while(i <= line.Length)
         {
-            if (i == line.Length)
+            if(i == line.Length)
             {
                 fields.Add(string.Empty);
                 break;
             }
 
-            if (line[i] == '"')
+            if(line[i] == '"')
             {
                 var sb = new System.Text.StringBuilder();
                 i++;
-                while (i < line.Length)
+                while(i < line.Length)
                 {
-                    if (line[i] == '"')
+                    if(line[i] == '"')
                     {
                         i++;
-                        if (i < line.Length && line[i] == '"')
+                        if(i < line.Length && line[i] == '"')
                         {
                             sb.Append('"');
                             i++;
@@ -163,7 +163,7 @@ public class CsvProductImporter : IProductImporter
                 }
 
                 fields.Add(sb.ToString());
-                if (i < line.Length && line[i] == ',')
+                if(i < line.Length && line[i] == ',')
                 {
                     i++;
                 }
@@ -171,13 +171,13 @@ public class CsvProductImporter : IProductImporter
             else
             {
                 var start = i;
-                while (i < line.Length && line[i] != ',')
+                while(i < line.Length && line[i] != ',')
                 {
                     i++;
                 }
 
                 fields.Add(line[start..i]);
-                if (i < line.Length)
+                if(i < line.Length)
                 {
                     i++;
                 }

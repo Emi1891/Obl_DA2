@@ -38,7 +38,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     public List<User> GetUsers(string? name, string? surname)
     {
         return context.Users.Where(u =>
-            !u.IsDeleted && (string.IsNullOrEmpty(name) || u.Name == name) && (string.IsNullOrEmpty(surname) || u.Surname == surname)).ToList();
+            !u.IsDeleted && (string.IsNullOrEmpty(name) || u.Name.Contains(name)) && (string.IsNullOrEmpty(surname) || u.Surname.Contains(surname))).ToList();
     }
 
     public void Update(User user)

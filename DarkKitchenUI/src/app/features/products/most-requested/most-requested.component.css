@@ -5,22 +5,6 @@
   gap: 2rem;
 }
 
-.back-link {
-  background: none;
-  border: none;
-  color: var(--dk-subtext);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 0.5rem;
-  transition: color 0.15s;
-}
-
-.back-link:hover {
-  color: var(--dk-text);
-}
-
 h1 {
   font-size: 1.75rem;
   color: var(--dk-text);
@@ -43,9 +27,6 @@ h1 {
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   min-width: 160px;
 }
 
@@ -70,28 +51,6 @@ input {
 
 input:focus {
   border-color: var(--dk-accent);
-}
-
-.primary-btn {
-  padding: 0.6rem 1.25rem;
-  border-radius: 8px;
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  background-color: var(--dk-accent);
-  color: var(--dk-crust);
-  transition: background-color 0.15s;
-}
-
-.primary-btn:hover:not(:disabled) {
-  background-color: var(--dk-accent-hover);
-}
-
-.primary-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .ranking {
@@ -158,25 +117,6 @@ input:focus {
   font-weight: 700;
   font-size: 1rem;
   white-space: nowrap;
-}
-
-.empty,
-.loading {
-  color: var(--dk-subtext);
-  text-align: center;
-  padding: 2rem;
-  font-family: "Josefin Sans", system-ui;
-}
-
-.error {
-  color: var(--dk-error);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(255, 111, 97, 0.1);
-  border: 1px solid var(--dk-error);
-  border-radius: 8px;
-  padding: 10px 14px;
 }
 
 @media (max-width: 720px) {

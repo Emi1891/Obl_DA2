@@ -1,3 +1,5 @@
+/* Shared buttons and feedback messages live in styles.css. */
+
 .shipping-types-container {
   padding: 3rem 2.5rem;
   display: flex;
@@ -27,46 +29,6 @@ h1 {
 .subtitle {
   color: var(--dk-subtext);
   font-size: 0.95rem;
-}
-
-.primary-btn,
-.ghost-btn {
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.primary-btn {
-  background-color: var(--dk-accent);
-  color: var(--dk-crust);
-}
-
-.primary-btn:hover {
-  background-color: var(--dk-accent-hover);
-}
-
-.ghost-btn {
-  background-color: transparent;
-  color: var(--dk-text);
-  border-color: var(--dk-border);
-}
-
-.ghost-btn:hover {
-  border-color: var(--dk-accent);
-  color: var(--dk-accent);
-}
-
-.small {
-  padding: 0.35rem 0.75rem;
-  font-size: 0.8rem;
 }
 
 .table-wrap {
@@ -121,28 +83,9 @@ h1 {
   text-align: right;
 }
 
-.actions {
+.cell-actions {
   text-align: right;
   white-space: nowrap;
-}
-
-.empty,
-.loading {
-  color: var(--dk-subtext);
-  text-align: center;
-  padding: 2rem;
-  font-family: "Josefin Sans", system-ui;
-}
-
-.error {
-  color: var(--dk-error);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(255, 111, 97, 0.1);
-  border: 1px solid var(--dk-error);
-  border-radius: 8px;
-  padding: 10px 14px;
 }
 
 @media (max-width: 720px) {

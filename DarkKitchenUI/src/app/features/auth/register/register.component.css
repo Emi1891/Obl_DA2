@@ -32,12 +32,6 @@ form {
   gap: 1rem;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
 label {
   color: var(--dk-subtext);
   font-size: 0.875rem;
@@ -121,17 +115,6 @@ input:focus {
 
 .toggle-password:hover {
   color: var(--dk-text);
-}
-
-.error {
-  color: var(--dk-error);
-  font-size: 0.85rem;
-  font-family: "Josefin Sans", system-ui;
-  text-align: center;
-  background-color: rgba(255, 111, 97, 0.1);
-  border: 1px solid var(--dk-error);
-  border-radius: 8px;
-  padding: 10px 14px;
 }
 
 button[type="submit"] {

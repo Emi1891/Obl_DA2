@@ -34,7 +34,7 @@
               <td class="type-name">{{ t.name }}</td>
               <td class="type-price">${{ t.price.toFixed(2) }}</td>
               @if (canEdit) {
-                <td class="actions">
+                <td class="cell-actions">
                   <button type="button" class="ghost-btn small" (click)="edit(t)">Edit</button>
                 </td>
               }

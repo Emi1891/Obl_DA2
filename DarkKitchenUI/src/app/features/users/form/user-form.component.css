@@ -16,22 +16,6 @@
   gap: 1.5rem;
 }
 
-.back-link {
-  background: none;
-  border: none;
-  color: var(--dk-subtext);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding: 0;
-  align-self: flex-start;
-  transition: color 0.15s;
-}
-
-.back-link:hover {
-  color: var(--dk-text);
-}
-
 h2 {
   color: var(--dk-text);
   font-size: 1.5rem;

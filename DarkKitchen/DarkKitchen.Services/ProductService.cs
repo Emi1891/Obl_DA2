@@ -97,14 +97,16 @@ public class ProductService(IProductRepository repository, IPromotionService pro
 
     public IEnumerable<ProductDto> GetProducts(ProductFilterDto filter)
     {
-        IEnumerable<Product> products = _repository.GetProducts(filter);
+        List<Product> products = _repository.GetProducts(filter).ToList();
 
-        if(!products.Any())
+        if(products.Count == 0)
         {
             throw new NotFoundException("No products found.");
         }
 
-        return _repository.GetProducts(filter).Select(p => new ProductDto(p.Id, p.Code, p.Name, p.Description, p.ProductLine, p.Category, p.Price, p.Images?.Select(i => i.Url).ToArray(), p.IsActive, p.UnitsSold));
+        var discounts = _promotionService.GetBestDiscountByProduct(products.Select(p => p.Id), DateTime.UtcNow.Date);
+
+        return products.Select(p => new ProductDto(p.Id, p.Code, p.Name, p.Description, p.ProductLine, p.Category, p.Price, p.Images?.Select(i => i.Url).ToArray(), p.IsActive, p.UnitsSold, discounts.TryGetValue(p.Id, out var discount) ? discount : null));
     }
 
     public IEnumerable<ProductDto> GetMostRequestedProducts(DateRangeDto dates)

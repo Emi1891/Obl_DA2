@@ -82,7 +82,17 @@
             <div class="product-body">
               <div class="product-row">
                 <h3>{{ p.name }}</h3>
-                <span class="price">${{ p.price.toFixed(2) }}</span>
+                @if (p.discountPercentage) {
+                  <span class="price price-discounted">
+                    <span class="original-price">${{ p.price.toFixed(2) }}</span>
+                    <span class="discounted-line">
+                      <span class="discount-badge">-{{ p.discountPercentage }}%</span>
+                      ${{ discountedPrice(p).toFixed(2) }}
+                    </span>
+                  </span>
+                } @else {
+                  <span class="price">${{ p.price.toFixed(2) }}</span>
+                }
               </div>
               <p class="code">#{{ p.code }}</p>
               @if (p.description) {

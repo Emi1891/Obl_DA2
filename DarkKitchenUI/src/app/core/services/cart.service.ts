@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Product } from '../models/product.model';
+import { Product, discountedUnitPrice } from '../models/product.model';
 
 export interface CartLine {
   product: Product;
@@ -13,6 +13,7 @@ export class CartService {
   readonly items = this.lines.asReadonly();
   readonly count = computed(() => this.lines().reduce((sum, l) => sum + l.quantity, 0));
   readonly subtotal = computed(() => this.lines().reduce((sum, l) => sum + l.product.price * l.quantity, 0));
+  readonly discountedSubtotal = computed(() => this.lines().reduce((sum, l) => sum + discountedUnitPrice(l.product) * l.quantity, 0));
   readonly isEmpty = computed(() => this.lines().length === 0);
 
   quantityOf(productId: number): number {

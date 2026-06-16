@@ -9,6 +9,11 @@ export interface Product {
   imageUrl?: string[] | null;
   isActive: boolean;
   unitsSold: number;
+  discountPercentage?: number | null;
+}
+
+export function discountedUnitPrice(product: Product): number {
+  return product.price * (1 - (product.discountPercentage ?? 0) / 100);
 }
 
 export interface CreateProductRequest {

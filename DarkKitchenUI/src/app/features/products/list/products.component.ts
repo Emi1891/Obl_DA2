@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { DigitsOnlyDirective } from '../../../shared/directives/digits-only.directive';
-import { Product, ProductFilters } from '../../../core/models/product.model';
+import { Product, ProductFilters, discountedUnitPrice } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-products',
@@ -153,6 +153,10 @@ export class ProductsComponent implements OnInit {
     const count = product.imageUrl?.length ?? 0;
     if (count === 0) return;
     this.imageIndex.set(product.id, (this.imageIdx(product) + 1) % count);
+  }
+
+  discountedPrice(product: Product): number {
+    return discountedUnitPrice(product);
   }
 
   trackById(_idx: number, p: Product) {

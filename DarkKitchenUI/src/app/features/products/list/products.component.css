@@ -243,6 +243,35 @@ h3 {
   white-space: nowrap;
 }
 
+.price-discounted {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.original-price {
+  color: var(--dk-subtext);
+  font-weight: 400;
+  font-size: 0.85rem;
+  text-decoration: line-through;
+}
+
+.discounted-line {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.discount-badge {
+  padding: 0.05rem 0.35rem;
+  border-radius: 6px;
+  background-color: var(--dk-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
 .code {
   font-family: "Josefin Sans", system-ui;
   font-size: 0.75rem;

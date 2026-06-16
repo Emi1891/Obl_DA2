@@ -97,7 +97,7 @@ public class ProductService(IProductRepository repository, IPromotionService pro
 
     public IEnumerable<ProductDto> GetProducts(ProductFilterDto filter)
     {
-        List<Product> products = _repository.GetProducts(filter).ToList();
+        var products = _repository.GetProducts(filter).ToList();
 
         if(products.Count == 0)
         {

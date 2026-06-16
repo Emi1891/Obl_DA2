@@ -199,7 +199,7 @@ input:focus {
   color: var(--dk-subtext);
 }
 
-.actions-col {
+.users-table th.actions-col {
   text-align: right;
 }
 

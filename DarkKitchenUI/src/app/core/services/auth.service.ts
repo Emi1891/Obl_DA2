@@ -27,10 +27,6 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
-  getAuthHeaders() {
-    return { Authorization: `Bearer ${this.getToken()}` };
-  }
-
   getPermissions(): string[] {
     const token = this.getToken();
     if (!token) return [];
@@ -42,6 +38,27 @@ export class AuthService {
     } catch {
       return [];
     }
+  }
+
+  private cachedToken: string | null = null;
+  private cachedPermissions = new Set<string>();
+
+  private permissionSet(): Set<string> {
+    const token = this.getToken();
+    if (token !== this.cachedToken) {
+      this.cachedToken = token;
+      this.cachedPermissions = new Set(this.getPermissions());
+    }
+    return this.cachedPermissions;
+  }
+
+  hasPermission(permission: string): boolean {
+    return this.permissionSet().has(permission);
+  }
+
+  hasAnyPermission(permissions: string[]): boolean {
+    const set = this.permissionSet();
+    return permissions.some(p => set.has(p));
   }
 
   isTokenExpired(): boolean {

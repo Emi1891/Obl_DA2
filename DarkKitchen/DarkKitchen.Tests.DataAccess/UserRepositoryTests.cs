@@ -200,4 +200,13 @@ public class UserRepositoryTests
 
         Assert.AreEqual(0, _context!.Users.Count());
     }
+
+    [TestMethod]
+    public void HasAny_WhenUsersExist_ReturnsTrue()
+    {
+        _context!.Users.Add(user!);
+        _context.SaveChanges();
+
+        Assert.IsTrue(_userRepository!.HasAny());
+    }
 }

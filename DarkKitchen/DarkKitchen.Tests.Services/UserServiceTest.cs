@@ -443,6 +443,29 @@ public class UserServiceTest
     }
 
     [TestMethod]
+    public void CreateUserWithRole_WhenEmailExistsButDeleted_ShouldReactivateUser()
+    {
+        var deletedUser = new User
+        {
+            Name = "OldName",
+            Surname = "OldSurname",
+            Email = "validEmail@gmail.com",
+            Phone = "+59899000000",
+            Password = "oldHashedPassword",
+            Role = Role.Client,
+            IsDeleted = true,
+        };
+        _userRepositoryMock!.Setup(repository => repository.GetByEmail("validEmail@gmail.com")).Returns(deletedUser);
+        _userRepositoryMock!.Setup(repository => repository.Update(It.IsAny<User>()));
+
+        _userService!.CreateUserWithRole(new CreateUserDto("validName", "validSurname", "validEmail@gmail.com", "099123456", "validPassword1!2!3!", "Admin"));
+
+        _userRepositoryMock!.Verify(repository => repository.Update(
+            It.Is<User>(u => !u.IsDeleted && u.Name == "validName" && u.Role == Role.Admin)), Times.Once);
+        _userRepositoryMock!.Verify(repository => repository.Add(It.IsAny<User>()), Times.Never);
+    }
+
+    [TestMethod]
     public void CreateUserWithRole_WhenInvalidName_ShouldThrowBadRequestException()
     {
         Assert.ThrowsException<BadRequestException>(() =>

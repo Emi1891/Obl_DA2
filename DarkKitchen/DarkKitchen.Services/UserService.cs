@@ -132,7 +132,9 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         ValidateUserFields(newUser.name, newUser.surname, newUser.email, newUser.password);
 
-        if(_userRepository.GetByEmail(newUser.email!) != null)
+        var existing = _userRepository.GetByEmail(newUser.email!);
+
+        if(existing != null && !existing.IsDeleted)
         {
             throw new BadRequestException("Email already in use.");
         }
@@ -140,6 +142,18 @@ public class UserService(IUserRepository userRepository) : IUserService
         if(!Enum.TryParse<Role>(newUser.role, ignoreCase: true, out var role))
         {
             throw new BadRequestException("Invalid role.");
+        }
+
+        if(existing != null)
+        {
+            existing.Name = newUser.name!;
+            existing.Surname = newUser.surname!;
+            existing.Phone = newUser.phone!;
+            existing.Password = BCrypt.Net.BCrypt.HashPassword(newUser.password);
+            existing.Role = role;
+            existing.IsDeleted = false;
+            _userRepository.Update(existing);
+            return;
         }
 
         var user = new User

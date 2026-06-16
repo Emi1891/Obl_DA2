@@ -44,7 +44,6 @@ p,
   font-style: normal;
 }
 
-/* Buttons */
 .primary-btn,
 .ghost-btn,
 .danger-btn {
@@ -102,7 +101,6 @@ p,
   font-size: 0.8rem;
 }
 
-/* Back link */
 .back-link {
   background: none;
   border: none;
@@ -119,7 +117,6 @@ p,
   color: var(--dk-text);
 }
 
-/* Form scaffold */
 .form-container {
   padding: 3rem 2.5rem;
   display: flex;
@@ -194,7 +191,6 @@ p,
   margin-top: 0.5rem;
 }
 
-/* Feedback messages */
 .error,
 .success {
   font-family: "Josefin Sans", system-ui;

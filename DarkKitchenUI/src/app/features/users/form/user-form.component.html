@@ -1,7 +1,5 @@
 <div class="form-container">
   <div class="form-card">
-    <button type="button" class="back-link" (click)="cancel()">← Back to users</button>
-
     <h2>{{ isEdit ? 'Edit user' : 'New user' }}</h2>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">

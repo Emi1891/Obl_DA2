@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
 import { formatPhoneDigits } from '../../../shared/phone';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-register',
@@ -64,7 +65,7 @@ export class RegisterComponent {
       password
     }).subscribe({
       next: () => this.router.navigate(['/login']),
-      error: (err) => this.errorMessage = err.error?.message?.replace(/^[^:]+:\s*/, '') ?? ''
+      error: (err) => this.errorMessage = extractError(err) ?? ''
     });
   }
 

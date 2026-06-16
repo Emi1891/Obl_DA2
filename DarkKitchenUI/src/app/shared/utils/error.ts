@@ -1,16 +1,17 @@
 export function extractError(err: unknown): string | null {
-  const e = err as { error?: { message?: string } | string };
-  const stripPrefix = (msg: string) => msg.replace(/^[^:]+:\s*/, '');
+  const body = (err as { error?: unknown })?.error;
+  let message: string | undefined;
 
-  if (typeof e.error === 'string') {
+  if (typeof body === 'string') {
     try {
-      const parsed = JSON.parse(e.error) as { message?: string };
-      if (parsed?.message) return stripPrefix(parsed.message);
+      message = (JSON.parse(body) as { message?: string }).message ?? body;
     } catch {
-      // not JSON — fall through and treat the string as the message
+      message = body;
     }
-    return stripPrefix(e.error);
+  } else if (body && typeof body === 'object') {
+    message = (body as { message?: string }).message;
   }
 
-  return e.error?.message ? stripPrefix(e.error.message) : null;
+  if (!message) return null;
+  return message.replace(/^[^:]+:\s*/, '').trim() || null;
 }

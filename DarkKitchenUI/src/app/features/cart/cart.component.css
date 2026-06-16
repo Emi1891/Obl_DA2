@@ -21,32 +21,6 @@ h1 {
   font-size: 0.95rem;
 }
 
-.primary-btn {
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  background-color: var(--dk-accent);
-  color: var(--dk-crust);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.15s;
-}
-
-.primary-btn:hover:not(:disabled) {
-  background-color: var(--dk-accent-hover);
-}
-
-.primary-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* Layout */
 .cart-layout {
   display: grid;
@@ -141,6 +115,28 @@ h1 {
   font-size: 0.78rem;
 }
 
+.line-discount {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.72rem;
+}
+
+.original-price {
+  color: var(--dk-subtext);
+  text-decoration: line-through;
+}
+
+.discount-badge {
+  padding: 0.02rem 0.3rem;
+  border-radius: 6px;
+  background-color: var(--dk-accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
 .line-total {
   color: var(--dk-text);
   font-family: "Josefin Sans", system-ui;
@@ -221,12 +217,6 @@ h1 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 label {
@@ -343,25 +333,6 @@ select:focus {
   align-items: center;
   gap: 1rem;
   padding: 2rem;
-}
-
-.empty,
-.loading {
-  color: var(--dk-subtext);
-  text-align: center;
-  padding: 2rem;
-  font-family: "Josefin Sans", system-ui;
-}
-
-.error {
-  color: var(--dk-error);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(255, 111, 97, 0.1);
-  border: 1px solid var(--dk-error);
-  border-radius: 8px;
-  padding: 10px 14px;
 }
 
 @media (max-width: 900px) {

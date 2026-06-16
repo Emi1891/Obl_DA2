@@ -2,9 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { ImporterInfo } from '../../../core/models/product.model';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-product-importer',
@@ -14,7 +14,6 @@ import { ImporterInfo } from '../../../core/models/product.model';
   styleUrl: './product-importer.component.css'
 })
 export class ProductImporterComponent implements OnInit {
-  private readonly auth = inject(AuthService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
 
@@ -33,10 +32,6 @@ export class ProductImporterComponent implements OnInit {
   importerSuccessMessage = '';
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     this.loadImporters();
   }
 
@@ -83,7 +78,7 @@ export class ProductImporterComponent implements OnInit {
         this.isUploading = false;
       },
       error: err => {
-        this.errorMessage = err?.error?.message ?? err?.error ?? 'Import failed.';
+        this.errorMessage = extractError(err) ?? 'Import failed.';
         this.isUploading = false;
       }
     });
@@ -121,7 +116,7 @@ export class ProductImporterComponent implements OnInit {
         this.loadImporters();
       },
       error: err => {
-        this.importerErrorMessage = err?.error?.message ?? err?.error ?? 'Upload failed.';
+        this.importerErrorMessage = extractError(err) ?? 'Upload failed.';
         this.isInstalling = false;
       }
     });

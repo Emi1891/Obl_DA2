@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
 import { SalesReport } from '../../core/models/sales-report.model';
+import { MONTH_NAMES } from '../../shared/utils/date';
 
 @Component({
   selector: 'app-sales-report',
@@ -12,23 +12,13 @@ import { SalesReport } from '../../core/models/sales-report.model';
   styleUrl: './sales-report.component.css'
 })
 export class SalesReportComponent implements OnInit {
-  private readonly auth = inject(AuthService);
   private readonly orderService = inject(OrderService);
-
-  private readonly monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
 
   report: SalesReport | null = null;
   isLoading = false;
   errorMessage = '';
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     this.load();
   }
 
@@ -48,6 +38,6 @@ export class SalesReportComponent implements OnInit {
   }
 
   monthLabel(year: number, month: number): string {
-    return `${this.monthNames[month - 1]} ${year}`;
+    return `${MONTH_NAMES[month - 1]} ${year}`;
   }
 }

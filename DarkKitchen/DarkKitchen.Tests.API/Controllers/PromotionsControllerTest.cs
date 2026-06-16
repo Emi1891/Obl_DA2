@@ -84,7 +84,7 @@ public class PromotionsControllerTest
     public void UpdatePromotionProducts_ValidData_ReturnsOk()
     {
         var dto = new UpdatePromotionProductsDto([1, 2, 3]);
-        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products));
+        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products, "admin@gmail.com"));
 
         var result = promotionsController!.UpdatePromotionProducts(1, dto);
         var resultObj = result as ObjectResult;
@@ -97,7 +97,7 @@ public class PromotionsControllerTest
     public void UpdatePromotionProducts_PromotionNotFound_ThrowsNotFoundException()
     {
         var dto = new UpdatePromotionProductsDto([1, 2, 3]);
-        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products)).Throws(new NotFoundException("Promotion not found."));
+        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products, "admin@gmail.com")).Throws(new NotFoundException("Promotion not found."));
 
         Assert.ThrowsException<NotFoundException>(() => promotionsController!.UpdatePromotionProducts(1, dto));
     }

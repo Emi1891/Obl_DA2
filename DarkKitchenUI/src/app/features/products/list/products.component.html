@@ -37,7 +37,7 @@
       </div>
       <div class="field grow">
         <label for="categories">Categories <span class="hint">(comma-separated)</span></label>
-        <input id="categories" type="text" formControlName="categories" placeholder="vegan, spicy" />
+        <input id="categories" type="text" formControlName="categories" placeholder="e.g. vegan, spicy" />
       </div>
       <div class="filter-actions">
         <button type="submit" class="primary-btn">Apply</button>
@@ -59,7 +59,16 @@
           <article class="product-card" [class.inactive]="!p.isActive">
             <div class="product-thumb">
               @if (p.imageUrl?.length) {
-                <img [src]="p.imageUrl![0]" [alt]="p.name" (error)="p.imageUrl = []" />
+                <img [src]="p.imageUrl![imageIdx(p)]" [alt]="p.name" />
+                @if (p.imageUrl!.length > 1) {
+                  <button type="button" class="thumb-nav prev" (click)="prevImage(p)" aria-label="Previous image">‹</button>
+                  <button type="button" class="thumb-nav next" (click)="nextImage(p)" aria-label="Next image">›</button>
+                  <div class="thumb-dots">
+                    @for (url of p.imageUrl!; track $index) {
+                      <span class="dot" [class.active]="$index === imageIdx(p)" (click)="setImage(p, $index)"></span>
+                    }
+                  </div>
+                }
               } @else {
                 <div class="thumb-placeholder">{{ p.name.charAt(0) || '?' }}</div>
               }
@@ -73,7 +82,17 @@
             <div class="product-body">
               <div class="product-row">
                 <h3>{{ p.name }}</h3>
-                <span class="price">${{ p.price.toFixed(2) }}</span>
+                @if (p.discountPercentage) {
+                  <span class="price price-discounted">
+                    <span class="original-price">${{ p.price.toFixed(2) }}</span>
+                    <span class="discounted-line">
+                      <span class="discount-badge">-{{ p.discountPercentage }}%</span>
+                      ${{ discountedPrice(p).toFixed(2) }}
+                    </span>
+                  </span>
+                } @else {
+                  <span class="price">${{ p.price.toFixed(2) }}</span>
+                }
               </div>
               <p class="code">#{{ p.code }}</p>
               @if (p.description) {

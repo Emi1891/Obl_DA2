@@ -34,6 +34,11 @@ export interface ShippingType {
   price: number;
 }
 
+export interface ShippingTypeRequest {
+  name: string;
+  price: number;
+}
+
 export interface OrderFilters {
   dateFrom?: string;
   dateTo?: string;

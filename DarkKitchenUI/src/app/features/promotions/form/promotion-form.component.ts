@@ -2,9 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { PromotionService } from '../../../core/services/promotion.service';
 import { Promotion, PromotionRequest } from '../../../core/models/promotion.model';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-promotion-form',
@@ -15,7 +15,6 @@ import { Promotion, PromotionRequest } from '../../../core/models/promotion.mode
 })
 export class PromotionFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthService);
   private readonly promotionService = inject(PromotionService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -33,11 +32,6 @@ export class PromotionFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.isEdit = true;
@@ -74,7 +68,7 @@ export class PromotionFormComponent implements OnInit {
       this.promotionService.update(this.promotionId, payload).subscribe({
         next: () => this.router.navigate(['/promotions']),
         error: err => {
-          this.errorMessage = this.extractError(err) ?? 'Could not update promotion.';
+          this.errorMessage = extractError(err) ?? 'Could not update promotion.';
           this.isSubmitting = false;
         }
       });
@@ -82,17 +76,11 @@ export class PromotionFormComponent implements OnInit {
       this.promotionService.create(payload).subscribe({
         next: () => this.router.navigate(['/promotions']),
         error: err => {
-          this.errorMessage = this.extractError(err) ?? 'Could not create promotion.';
+          this.errorMessage = extractError(err) ?? 'Could not create promotion.';
           this.isSubmitting = false;
         }
       });
     }
-  }
-
-  private extractError(err: unknown): string | null {
-    const e = err as { error?: { message?: string } | string };
-    if (typeof e.error === 'string') return e.error.replace(/^[^:]+:\s*/, '');
-    return e.error?.message?.replace(/^[^:]+:\s*/, '') ?? null;
   }
 
   cancel(): void {

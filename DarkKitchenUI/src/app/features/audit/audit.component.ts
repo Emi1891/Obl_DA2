@@ -1,10 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
 import { AuditService } from '../../core/services/audit.service';
 import { AuditRecord } from '../../core/models/audit.model';
+import { MONTH_NAMES, oneMonthAgoRange } from '../../shared/utils/date';
 
 @Component({
   selector: 'app-audit',
@@ -15,16 +14,9 @@ import { AuditRecord } from '../../core/models/audit.model';
 })
 export class AuditComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthService);
   private readonly auditService = inject(AuditService);
-  private readonly router = inject(Router);
 
   readonly entityNames = ['Product', 'Promotion'];
-
-  private readonly monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
 
   records: AuditRecord[] = [];
   hasSearched = false;
@@ -39,17 +31,7 @@ export class AuditComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-    const today = new Date();
-    const monthAgo = new Date();
-    monthAgo.setMonth(today.getMonth() - 1);
-    this.form.patchValue({
-      dateFrom: monthAgo.toISOString().slice(0, 10),
-      dateTo: today.toISOString().slice(0, 10)
-    });
+    this.form.patchValue(oneMonthAgoRange());
     this.load();
   }
 
@@ -86,14 +68,11 @@ export class AuditComponent implements OnInit {
     const utcValue = value.endsWith('Z') ? value : `${value}Z`;
     const date = new Date(utcValue);
     const day = date.getDate();
-    const month = this.monthNames[date.getMonth()];
+    const month = MONTH_NAMES[date.getMonth()];
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${month} ${day}, ${year}, ${hours}:${minutes}`;
   }
 
-  back(): void {
-    this.router.navigate(['/home']);
-  }
 }

@@ -2,9 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
+import { oneMonthAgoRange } from '../../../shared/utils/date';
 
 @Component({
   selector: 'app-most-requested',
@@ -15,7 +15,6 @@ import { Product } from '../../../core/models/product.model';
 })
 export class MostRequestedComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
 
@@ -29,17 +28,7 @@ export class MostRequestedComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-    const today = new Date();
-    const monthAgo = new Date();
-    monthAgo.setMonth(today.getMonth() - 1);
-    this.form.patchValue({
-      dateFrom: monthAgo.toISOString().slice(0, 10),
-      dateTo: today.toISOString().slice(0, 10)
-    });
+    this.form.patchValue(oneMonthAgoRange());
     this.load();
   }
 

@@ -20,7 +20,3 @@ h1 {
   color: var(--dk-subtext);
   font-size: 0.95rem;
 }
-
-.loading {
-  color: var(--dk-subtext);
-}

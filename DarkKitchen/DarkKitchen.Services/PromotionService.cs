@@ -54,7 +54,7 @@ public class PromotionService(IPromotionRepository promotionRepository, IAuditSe
         _auditService.LogChange("Promotion", promotion.Id, "Promotion updated", responsibleUser);
     }
 
-    public void UpdatePromotionProducts(int promotionId, List<int> productIds)
+    public void UpdatePromotionProducts(int promotionId, List<int> productIds, string responsibleUser)
     {
         var promotion = _promotionRepository.GetById(promotionId);
         if(promotion == null)
@@ -63,6 +63,7 @@ public class PromotionService(IPromotionRepository promotionRepository, IAuditSe
         }
 
         _promotionRepository.SetProducts(promotionId, productIds);
+        _auditService.LogChange("Promotion", promotion.Id, "Promotion products updated", responsibleUser);
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionFiltersDto filter)

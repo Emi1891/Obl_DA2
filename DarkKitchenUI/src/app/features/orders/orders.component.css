@@ -21,47 +21,6 @@ h1 {
   font-size: 0.95rem;
 }
 
-.primary-btn,
-.ghost-btn {
-  padding: 0.55rem 1rem;
-  border-radius: 8px;
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.primary-btn {
-  background-color: var(--dk-accent);
-  color: var(--dk-crust);
-}
-
-.primary-btn:hover:not(:disabled) {
-  background-color: var(--dk-accent-hover);
-}
-
-.primary-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.ghost-btn {
-  background-color: transparent;
-  color: var(--dk-text);
-  border-color: var(--dk-border);
-}
-
-.ghost-btn:hover {
-  border-color: var(--dk-accent);
-  color: var(--dk-accent);
-}
-
 .filters,
 .lookup {
   display: grid;
@@ -76,12 +35,6 @@ h1 {
 
 .lookup {
   grid-template-columns: 1fr auto;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .field.grow {
@@ -224,25 +177,6 @@ h3 {
   gap: 0.5rem;
   border-top: 1px solid var(--dk-border);
   padding-top: 0.85rem;
-}
-
-.empty,
-.loading {
-  color: var(--dk-subtext);
-  text-align: center;
-  padding: 2rem;
-  font-family: "Josefin Sans", system-ui;
-}
-
-.error {
-  color: var(--dk-error);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(255, 111, 97, 0.1);
-  border: 1px solid var(--dk-error);
-  border-radius: 8px;
-  padding: 10px 14px;
 }
 
 @media (max-width: 720px) {

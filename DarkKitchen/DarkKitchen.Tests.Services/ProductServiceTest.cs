@@ -106,6 +106,7 @@ public class ProductServiceTest
     public void GetProducts_WhenProductsExist_ReturnsMappedDtos()
     {
         productRepositoryMock!.Setup(r => r.GetProducts(It.IsAny<ProductFilterDto>())).Returns([validProduct!]);
+        promotionServiceMock!.Setup(s => s.GetBestDiscountByProduct(It.IsAny<IEnumerable<int>>(), It.IsAny<DateTime>())).Returns([]);
         var filters = new ProductFilterDto
         {
             ProductLine = "Valid Line"
@@ -114,6 +115,18 @@ public class ProductServiceTest
         var result = productService!.GetProducts(filters);
 
         Assert.AreEqual(1, result.Count());
+    }
+
+    [TestMethod]
+    public void GetProducts_WhenProductHasActivePromotion_SetsDiscountPercentage()
+    {
+        productRepositoryMock!.Setup(r => r.GetProducts(It.IsAny<ProductFilterDto>())).Returns([validProduct!]);
+        promotionServiceMock!.Setup(s => s.GetBestDiscountByProduct(It.IsAny<IEnumerable<int>>(), It.IsAny<DateTime>()))
+            .Returns(new Dictionary<int, int> { { validProduct!.Id, 20 } });
+
+        var result = productService!.GetProducts(new ProductFilterDto { });
+
+        Assert.AreEqual(20, result.Single().discountPercentage);
     }
 
     [TestMethod]
@@ -130,6 +143,7 @@ public class ProductServiceTest
     {
         validProduct!.Images = null;
         productRepositoryMock!.Setup(r => r.GetProducts(It.IsAny<ProductFilterDto>())).Returns([validProduct!]);
+        promotionServiceMock!.Setup(s => s.GetBestDiscountByProduct(It.IsAny<IEnumerable<int>>(), It.IsAny<DateTime>())).Returns([]);
         var filters = new ProductFilterDto { };
 
         var result = productService!.GetProducts(filters);

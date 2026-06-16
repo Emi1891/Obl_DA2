@@ -42,12 +42,51 @@ public class UserServiceTest
             .Setup(repository => repository.GetByEmail(_validUser.email!))
             .Returns((User?)null);
         _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(true);
+        _userRepositoryMock!
             .Setup(repository => repository.Add(It.IsAny<User>()));
 
         _userService!.CreateUser(_validUser);
 
         _userRepositoryMock!
             .Verify(repository => repository.Add(It.IsAny<User>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateUser_WhenNoUsersExist_ShouldCreateAdmin()
+    {
+        _userRepositoryMock!
+            .Setup(repository => repository.GetByEmail(_validUser.email!))
+            .Returns((User?)null);
+        _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(false);
+        _userRepositoryMock!
+            .Setup(repository => repository.Add(It.IsAny<User>()));
+
+        _userService!.CreateUser(_validUser);
+
+        _userRepositoryMock!
+            .Verify(repository => repository.Add(It.Is<User>(u => u.Role == Role.Admin)), Times.Once);
+    }
+
+    [TestMethod]
+    public void CreateUser_WhenUsersExist_ShouldCreateClient()
+    {
+        _userRepositoryMock!
+            .Setup(repository => repository.GetByEmail(_validUser.email!))
+            .Returns((User?)null);
+        _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(true);
+        _userRepositoryMock!
+            .Setup(repository => repository.Add(It.IsAny<User>()));
+
+        _userService!.CreateUser(_validUser);
+
+        _userRepositoryMock!
+            .Verify(repository => repository.Add(It.Is<User>(u => u.Role == Role.Client)), Times.Once);
     }
 
     [TestMethod]
@@ -340,6 +379,33 @@ public class UserServiceTest
     }
 
     [TestMethod]
+    public void CreateUser_WhenEmailExistsButDeleted_ShouldReactivateUser()
+    {
+        var deletedUser = new User
+        {
+            Name = "OldName",
+            Surname = "OldSurname",
+            Email = _validUser.email!,
+            Phone = "+59899000000",
+            Password = "oldHashedPassword",
+            Role = Role.Admin,
+            IsDeleted = true,
+        };
+
+        _userRepositoryMock!
+            .Setup(repository => repository.GetByEmail(_validUser.email!))
+            .Returns(deletedUser);
+        _userRepositoryMock!
+            .Setup(repository => repository.Update(It.IsAny<User>()));
+
+        _userService!.CreateUser(_validUser);
+
+        _userRepositoryMock!.Verify(repository => repository.Update(
+            It.Is<User>(u => !u.IsDeleted && u.Name == _validUser.name && u.Role == Role.Admin)), Times.Once);
+        _userRepositoryMock!.Verify(repository => repository.Add(It.IsAny<User>()), Times.Never);
+    }
+
+    [TestMethod]
     public void CreateUser_WhenPhoneHasInvalidFormat_ShouldThrowBadRequestException()
     {
         _validUser = _validUser with { phone = "099123456" };
@@ -356,6 +422,9 @@ public class UserServiceTest
             .Setup(repository => repository.GetByEmail(userWithNullPhone.email!))
             .Returns((User?)null);
         _userRepositoryMock!
+            .Setup(repository => repository.HasAny())
+            .Returns(true);
+        _userRepositoryMock!
             .Setup(repository => repository.Add(It.IsAny<User>()));
 
         _userService!.CreateUser(userWithNullPhone);
@@ -371,6 +440,29 @@ public class UserServiceTest
 
         Assert.ThrowsException<BadRequestException>(() =>
             _userService!.CreateUserWithRole(new CreateUserDto("validName", "validSurname", "validEmail@gmail.com", "099123456", "validPassword1!2!3!", "Admin")));
+    }
+
+    [TestMethod]
+    public void CreateUserWithRole_WhenEmailExistsButDeleted_ShouldReactivateUser()
+    {
+        var deletedUser = new User
+        {
+            Name = "OldName",
+            Surname = "OldSurname",
+            Email = "validEmail@gmail.com",
+            Phone = "+59899000000",
+            Password = "oldHashedPassword",
+            Role = Role.Client,
+            IsDeleted = true,
+        };
+        _userRepositoryMock!.Setup(repository => repository.GetByEmail("validEmail@gmail.com")).Returns(deletedUser);
+        _userRepositoryMock!.Setup(repository => repository.Update(It.IsAny<User>()));
+
+        _userService!.CreateUserWithRole(new CreateUserDto("validName", "validSurname", "validEmail@gmail.com", "099123456", "validPassword1!2!3!", "Admin"));
+
+        _userRepositoryMock!.Verify(repository => repository.Update(
+            It.Is<User>(u => !u.IsDeleted && u.Name == "validName" && u.Role == Role.Admin)), Times.Once);
+        _userRepositoryMock!.Verify(repository => repository.Add(It.IsAny<User>()), Times.Never);
     }
 
     [TestMethod]

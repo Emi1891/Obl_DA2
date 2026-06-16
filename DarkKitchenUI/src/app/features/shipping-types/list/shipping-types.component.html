@@ -1,0 +1,47 @@
+<div class="shipping-types-container">
+  <div class="shipping-types-header">
+    <div class="header-text">
+      <h1>Shipping Types</h1>
+      <p class="subtitle">Manage available delivery methods and their prices.</p>
+    </div>
+
+    @if (canCreate) {
+      <a routerLink="/shipping-types/new" class="primary-btn">+ New shipping type</a>
+    }
+  </div>
+
+  @if (errorMessage) { <p class="error">{{ errorMessage }}</p> }
+
+  @if (isLoading) {
+    <p class="loading">Loading...</p>
+  } @else if (list.length === 0) {
+    <p class="empty">No shipping types found.</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="shipping-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            @if (canEdit) {
+              <th class="actions-col">Actions</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of list; track t.id) {
+            <tr>
+              <td class="type-name">{{ t.name }}</td>
+              <td class="type-price">${{ t.price.toFixed(2) }}</td>
+              @if (canEdit) {
+                <td class="cell-actions">
+                  <button type="button" class="ghost-btn small" (click)="edit(t)">Edit</button>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

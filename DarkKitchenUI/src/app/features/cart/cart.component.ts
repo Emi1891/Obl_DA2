@@ -5,8 +5,8 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ShippingTypeService } from '../../core/services/shipping-type.service';
 import { OrderService } from '../../core/services/order.service';
-import { CartService } from '../../core/services/cart.service';
-import { Product } from '../../core/models/product.model';
+import { CartService, CartLine } from '../../core/services/cart.service';
+import { Product, discountedUnitPrice } from '../../core/models/product.model';
 import { CreateOrderRequest, OrderResponse, ShippingType } from '../../core/models/order.model';
 
 @Component({
@@ -30,8 +30,7 @@ export class CartComponent implements OnInit {
   errorMessage = '';
   placedOrder: OrderResponse | null = null;
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canPlaceOrder = this.perms.has('PlaceOrder');
+  readonly canPlaceOrder = this.auth.hasPermission('PlaceOrder');
 
   checkoutForm = this.fb.group({
     street: ['', Validators.required],
@@ -41,10 +40,6 @@ export class CartComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canPlaceOrder) this.loadShippingTypes();
   }
 
@@ -80,8 +75,22 @@ export class CartComponent implements OnInit {
     return this.shippingTypes.find(t => t.id === id) ?? null;
   }
 
+  private readonly vatRate = 0.22;
+
+  get estimatedVat(): number {
+    return this.cart.discountedSubtotal() * this.vatRate;
+  }
+
   get estimatedTotal(): number {
-    return this.cart.subtotal() + (this.selectedShipping?.price ?? 0);
+    return this.cart.discountedSubtotal() + this.estimatedVat + (this.selectedShipping?.price ?? 0);
+  }
+
+  unitPrice(product: Product): number {
+    return discountedUnitPrice(product);
+  }
+
+  lineTotal(line: CartLine): number {
+    return discountedUnitPrice(line.product) * line.quantity;
   }
 
   placeOrder(): void {

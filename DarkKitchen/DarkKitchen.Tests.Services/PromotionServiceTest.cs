@@ -96,8 +96,9 @@ public class PromotionServiceTest
     {
         promotionRepositoryMock!.Setup(r => r.GetById(1)).Returns(promotionEntity!);
         promotionRepositoryMock!.Setup(r => r.SetProducts(1, It.IsAny<List<int>>()));
+        auditServiceMock!.Setup(a => a.LogChange(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()));
 
-        promotionService!.UpdatePromotionProducts(1, [1, 2, 3]);
+        promotionService!.UpdatePromotionProducts(1, [1, 2, 3], "admin@gmail.com");
 
         promotionRepositoryMock!.Verify(r => r.SetProducts(1, It.IsAny<List<int>>()), Times.Once);
     }
@@ -107,7 +108,7 @@ public class PromotionServiceTest
     {
         promotionRepositoryMock!.Setup(r => r.GetById(1)).Returns((Promotion?)null);
 
-        Assert.ThrowsException<NotFoundException>(() => promotionService!.UpdatePromotionProducts(1, [1, 2, 3]));
+        Assert.ThrowsException<NotFoundException>(() => promotionService!.UpdatePromotionProducts(1, [1, 2, 3], "admin@gmail.com"));
     }
 
     [TestMethod]
@@ -211,6 +212,18 @@ public class PromotionServiceTest
         auditServiceMock!.Setup(a => a.LogChange("Promotion", It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()));
 
         promotionService!.UpdatePromotion(1, validPromotion, "admin@gmail.com");
+
+        auditServiceMock!.Verify(a => a.LogChange("Promotion", It.IsAny<int>(), It.IsAny<string>(), "admin@gmail.com"), Times.Once);
+    }
+
+    [TestMethod]
+    public void UpdatePromotionProducts_ValidData_AuditLogCreated()
+    {
+        promotionRepositoryMock!.Setup(r => r.GetById(1)).Returns(promotionEntity!);
+        promotionRepositoryMock!.Setup(r => r.SetProducts(1, It.IsAny<List<int>>()));
+        auditServiceMock!.Setup(a => a.LogChange("Promotion", It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()));
+
+        promotionService!.UpdatePromotionProducts(1, [1, 2, 3], "admin@gmail.com");
 
         auditServiceMock!.Verify(a => a.LogChange("Promotion", It.IsAny<int>(), It.IsAny<string>(), "admin@gmail.com"), Times.Once);
     }

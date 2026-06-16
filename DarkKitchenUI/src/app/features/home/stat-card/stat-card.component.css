@@ -63,3 +63,23 @@
   color: var(--dk-subtext);
   line-height: 1.6;
 }
+
+.stat-manage-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background-color: var(--dk-accent);
+  color: var(--dk-crust);
+  text-decoration: none;
+  align-self: flex-start;
+  margin-top: auto;
+  transition: background-color 0.15s;
+}
+
+.stat-manage-btn:hover {
+  background-color: var(--dk-accent-hover);
+}

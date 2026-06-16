@@ -2,9 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { CreateProductRequest, Product, UpdateProductRequest } from '../../../core/models/product.model';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-product-form',
@@ -15,7 +15,6 @@ import { CreateProductRequest, Product, UpdateProductRequest } from '../../../co
 })
 export class ProductFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthService);
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -37,11 +36,6 @@ export class ProductFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       this.isEdit = true;
@@ -59,7 +53,10 @@ export class ProductFormComponent implements OnInit {
     return this.form.get('imageUrl') as FormArray<FormControl<string>>;
   }
 
+  readonly maxImages = 3;
+
   addImage(value = ''): void {
+    if (this.images.length >= this.maxImages) return;
     this.images.push(this.fb.nonNullable.control(value));
   }
 
@@ -108,7 +105,7 @@ export class ProductFormComponent implements OnInit {
       this.productService.updateProduct(payload).subscribe({
         next: () => this.router.navigate(['/products']),
         error: err => {
-          this.errorMessage = this.extractError(err) ?? 'Could not update product.';
+          this.errorMessage = extractError(err) ?? 'Could not update product.';
           this.isSubmitting = false;
         }
       });
@@ -125,17 +122,11 @@ export class ProductFormComponent implements OnInit {
       this.productService.createProduct(payload).subscribe({
         next: () => this.router.navigate(['/products']),
         error: err => {
-          this.errorMessage = this.extractError(err) ?? 'Could not create product.';
+          this.errorMessage = extractError(err) ?? 'Could not create product.';
           this.isSubmitting = false;
         }
       });
     }
-  }
-
-  private extractError(err: unknown): string | null {
-    const e = err as { error?: { message?: string } | string };
-    if (typeof e.error === 'string') return e.error.replace(/^[^:]+:\s*/, '');
-    return e.error?.message?.replace(/^[^:]+:\s*/, '') ?? null;
   }
 
   cancel(): void {

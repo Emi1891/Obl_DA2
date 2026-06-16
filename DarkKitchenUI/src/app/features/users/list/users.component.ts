@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { UserManagementService } from '../../../core/services/user-management.service';
 import { UserFilters, UserListItem } from '../../../core/models/user-management.model';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-users',
@@ -30,17 +31,12 @@ export class UsersComponent implements OnInit {
     surname: ['']
   });
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canView = this.perms.has('GetUsers');
-  readonly canCreate = this.perms.has('CreateUser');
-  readonly canEdit = this.perms.has('UpdateUser');
-  readonly canDelete = this.perms.has('DeleteUser');
+  readonly canView = this.auth.hasPermission('GetUsers');
+  readonly canCreate = this.auth.hasPermission('CreateUser');
+  readonly canEdit = this.auth.hasPermission('UpdateUser');
+  readonly canDelete = this.auth.hasPermission('DeleteUser');
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canView) this.load();
   }
 
@@ -85,7 +81,7 @@ export class UsersComponent implements OnInit {
         this.feedback = `User "${user.email}" deleted.`;
       },
       error: err => {
-        this.errorMessage = err?.error?.message ?? err?.error ?? `Could not delete "${user.email}".`;
+        this.errorMessage = extractError(err) ?? `Could not delete "${user.email}".`;
       }
     });
   }

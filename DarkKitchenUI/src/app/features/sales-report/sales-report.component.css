@@ -115,25 +115,6 @@ h1 {
   white-space: nowrap;
 }
 
-.empty,
-.loading {
-  color: var(--dk-subtext);
-  text-align: center;
-  padding: 2rem;
-  font-family: "Josefin Sans", system-ui;
-}
-
-.error {
-  color: var(--dk-error);
-  font-family: "Josefin Sans", system-ui;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(255, 111, 97, 0.1);
-  border: 1px solid var(--dk-error);
-  border-radius: 8px;
-  padding: 10px 14px;
-}
-
 @media (max-width: 720px) {
   .report-container {
     padding: 2rem 1.25rem;

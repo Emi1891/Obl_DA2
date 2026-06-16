@@ -45,14 +45,22 @@
                 </div>
                 <div class="line-info">
                   <span class="line-name">{{ line.product.name }}</span>
-                  <span class="line-meta">${{ line.product.price.toFixed(2) }} each</span>
+                  @if (line.product.discountPercentage) {
+                    <span class="line-meta">${{ unitPrice(line.product).toFixed(2) }} each</span>
+                    <span class="line-discount">
+                      <span class="original-price">${{ line.product.price.toFixed(2) }}</span>
+                      <span class="discount-badge">-{{ line.product.discountPercentage }}%</span>
+                    </span>
+                  } @else {
+                    <span class="line-meta">${{ line.product.price.toFixed(2) }} each</span>
+                  }
                 </div>
                 <div class="stepper">
                   <button type="button" (click)="decrease(line.product)" aria-label="Remove one">−</button>
                   <span class="qty">{{ line.quantity }}</span>
                   <button type="button" (click)="add(line.product)" aria-label="Add one">+</button>
                 </div>
-                <span class="line-total">${{ (line.product.price * line.quantity).toFixed(2) }}</span>
+                <span class="line-total">${{ lineTotal(line).toFixed(2) }}</span>
                 <button type="button" class="remove-btn" (click)="remove(line.product.id)" aria-label="Remove item">✕</button>
               </li>
             }
@@ -97,11 +105,12 @@
             </div>
 
             <ul class="totals">
-              <li><span>Items</span><span>${{ cart.subtotal().toFixed(2) }}</span></li>
+              <li><span>Items</span><span>${{ cart.discountedSubtotal().toFixed(2) }}</span></li>
+              <li><span>VAT (22%)</span><span>${{ estimatedVat.toFixed(2) }}</span></li>
               <li><span>Shipping</span><span>${{ (selectedShipping?.price ?? 0).toFixed(2) }}</span></li>
               <li class="grand"><span>Estimated total</span><span>${{ estimatedTotal.toFixed(2) }}</span></li>
             </ul>
-            <p class="disclaimer">Discounts and VAT are calculated when the order is confirmed.</p>
+            <p class="disclaimer">Final discounts and VAT are confirmed when the order is placed.</p>
 
             <button type="submit" class="primary-btn place-btn" [disabled]="cart.isEmpty() || isPlacingOrder">
               {{ isPlacingOrder ? 'Placing order...' : 'Place order' }}

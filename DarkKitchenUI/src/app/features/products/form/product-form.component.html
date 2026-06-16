@@ -1,7 +1,5 @@
 <div class="form-container">
   <div class="form-card">
-    <button type="button" class="back-link" (click)="cancel()">← Back to products</button>
-
     <h2>{{ isEdit ? 'Edit product' : 'New product' }}</h2>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -40,7 +38,8 @@
       <div class="field">
         <div class="images-header">
           <label>Image URLs</label>
-          <button type="button" class="ghost-btn small" (click)="addImage()">+ Add</button>
+          <button type="button" class="ghost-btn small" (click)="addImage()"
+                  [style.visibility]="images.length < maxImages ? 'visible' : 'hidden'">+ Add</button>
         </div>
         <div class="images-list" formArrayName="imageUrl">
           @for (ctrl of images.controls; track $index) {

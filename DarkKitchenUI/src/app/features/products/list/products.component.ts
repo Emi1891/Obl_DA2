@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { DigitsOnlyDirective } from '../../../shared/directives/digits-only.directive';
-import { Product, ProductFilters } from '../../../core/models/product.model';
+import { Product, ProductFilters, discountedUnitPrice } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-products',
@@ -32,20 +32,15 @@ export class ProductsComponent implements OnInit {
     categories: ['']
   });
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canView = this.perms.has('GetProducts');
-  readonly canCreate = this.perms.has('CreateProduct');
-  readonly canEdit = this.perms.has('UpdateProduct');
-  readonly canToggleStatus = this.perms.has('UpdateProductStatus');
-  readonly canImport = this.perms.has('ImportProducts');
-  readonly canSeeMostRequested = this.perms.has('GetMostPopularProducts');
-  readonly canAddToCart = this.perms.has('PlaceOrder');
+  readonly canView = this.auth.hasPermission('GetProducts');
+  readonly canCreate = this.auth.hasPermission('CreateProduct');
+  readonly canEdit = this.auth.hasPermission('UpdateProduct');
+  readonly canToggleStatus = this.auth.hasPermission('UpdateProductStatus');
+  readonly canImport = this.auth.hasPermission('ImportProducts');
+  readonly canSeeMostRequested = this.auth.hasPermission('GetMostPopularProducts');
+  readonly canAddToCart = this.auth.hasPermission('PlaceOrder');
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canView) this.load();
   }
 
@@ -136,6 +131,32 @@ export class ProductsComponent implements OnInit {
 
   edit(product: Product): void {
     this.router.navigate(['/products', product.id, 'edit'], { state: { product } });
+  }
+
+  private readonly imageIndex = new Map<number, number>();
+
+  imageIdx(product: Product): number {
+    return this.imageIndex.get(product.id) ?? 0;
+  }
+
+  setImage(product: Product, index: number): void {
+    this.imageIndex.set(product.id, index);
+  }
+
+  prevImage(product: Product): void {
+    const count = product.imageUrl?.length ?? 0;
+    if (count === 0) return;
+    this.imageIndex.set(product.id, (this.imageIdx(product) - 1 + count) % count);
+  }
+
+  nextImage(product: Product): void {
+    const count = product.imageUrl?.length ?? 0;
+    if (count === 0) return;
+    this.imageIndex.set(product.id, (this.imageIdx(product) + 1) % count);
+  }
+
+  discountedPrice(product: Product): number {
+    return discountedUnitPrice(product);
   }
 
   trackById(_idx: number, p: Product) {

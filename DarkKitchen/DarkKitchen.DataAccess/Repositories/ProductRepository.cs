@@ -2,6 +2,7 @@
 using DarkKitchen.Domain.Interfaces.Repository;
 using DarkKitchen.Models.DateDTOs;
 using DarkKitchen.Models.ProductDTOs;
+using Microsoft.EntityFrameworkCore;
 namespace DarkKitchen.DataAccess.Repositories;
 
 public class ProductRepository(AppDbContext context) : IProductRepository
@@ -32,17 +33,17 @@ public class ProductRepository(AppDbContext context) : IProductRepository
 
     public Product? GetById(int id)
     {
-        return context.Products.FirstOrDefault(p => p.Id == id);
+        return context.Products.Include(p => p.Images).FirstOrDefault(p => p.Id == id);
     }
 
     public Product? GetByCode(string code)
     {
-        return context.Products.FirstOrDefault(p => p.Code == code);
+        return context.Products.Include(p => p.Images).FirstOrDefault(p => p.Code == code);
     }
 
     public IEnumerable<Product> GetProducts(ProductFilterDto filter)
     {
-        var query = context.Products.AsQueryable();
+        var query = context.Products.Include(p => p.Images).AsQueryable();
 
         if(!string.IsNullOrEmpty(filter.ProductLine))
         {
@@ -73,6 +74,7 @@ public class ProductRepository(AppDbContext context) : IProductRepository
             .ToList();
 
         return context.Products
+            .Include(p => p.Images)
             .Where(p => productIds.Contains(p.Id))
             .ToList()
             .OrderBy(p => productIds.IndexOf(p.Id));

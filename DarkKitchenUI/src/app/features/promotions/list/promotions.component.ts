@@ -29,17 +29,12 @@ export class PromotionsComponent implements OnInit {
     productName: ['']
   });
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canView = this.perms.has('GetCurrentPromotions');
-  readonly canCreate = this.perms.has('CreatePromotion');
-  readonly canEdit = this.perms.has('UpdatePromotion');
-  readonly canEditProducts = this.perms.has('UpdatePromotionProducts');
+  readonly canView = this.auth.hasPermission('GetCurrentPromotions');
+  readonly canCreate = this.auth.hasPermission('CreatePromotion');
+  readonly canEdit = this.auth.hasPermission('UpdatePromotion');
+  readonly canEditProducts = this.auth.hasPermission('UpdatePromotionProducts');
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canView) this.load();
   }
 

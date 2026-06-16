@@ -47,10 +47,9 @@ export class OrdersComponent implements OnInit {
 
   private readonly defaultDateFrom = '2000-01-01T00:00:00';
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canViewAll = this.perms.has('GetOrdersByStatus');
-  readonly canViewMine = this.perms.has('GetMyOrders');
-  readonly canViewDetails = this.perms.has('GetOrderDetails');
+  readonly canViewAll = this.auth.hasPermission('GetOrdersByStatus');
+  readonly canViewMine = this.auth.hasPermission('GetMyOrders');
+  readonly canViewDetails = this.auth.hasPermission('GetOrderDetails');
   readonly canList = this.canViewAll || this.canViewMine;
 
   filtersForm = this.fb.group({
@@ -65,10 +64,6 @@ export class OrdersComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
     if (this.canList) this.load();
   }
 
@@ -127,7 +122,7 @@ export class OrdersComponent implements OnInit {
   }
 
   availableActions(order: OrderResponse): string[] {
-    return (this.validTransitions[order.status] ?? []).filter(s => this.perms.has(this.statusPermission[s]));
+    return (this.validTransitions[order.status] ?? []).filter(s => this.auth.hasPermission(this.statusPermission[s]));
   }
 
   updateStatus(order: OrderResponse, status: string): void {

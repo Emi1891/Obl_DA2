@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import { UserManagementService } from '../../../core/services/user-management.service';
 import {
   CreateUserPayload,
@@ -11,6 +10,7 @@ import {
   UserRole
 } from '../../../core/models/user-management.model';
 import { formatPhoneDigits, toLocalPhone } from '../../../shared/phone';
+import { extractError } from '../../../shared/utils/error';
 
 @Component({
   selector: 'app-user-form',
@@ -21,7 +21,6 @@ import { formatPhoneDigits, toLocalPhone } from '../../../shared/phone';
 })
 export class UserFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthService);
   private readonly users = inject(UserManagementService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -44,11 +43,6 @@ export class UserFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.auth.isTokenExpired()) {
-      this.auth.logout(true);
-      return;
-    }
-
     const emailParam = this.route.snapshot.paramMap.get('email');
     if (emailParam) {
       this.isEdit = true;
@@ -104,7 +98,7 @@ export class UserFormComponent implements OnInit {
       this.users.updateUser(payload).subscribe({
         next: () => this.router.navigate(['/users']),
         error: err => {
-          this.errorMessage = this.extractError(err) ?? 'Could not update user.';
+          this.errorMessage = extractError(err) ?? 'Could not update user.';
           this.isSubmitting = false;
         }
       });
@@ -120,17 +114,11 @@ export class UserFormComponent implements OnInit {
       this.users.createUser(payload).subscribe({
         next: () => this.router.navigate(['/users']),
         error: err => {
-          this.errorMessage = this.extractError(err) ?? 'Could not create user.';
+          this.errorMessage = extractError(err) ?? 'Could not create user.';
           this.isSubmitting = false;
         }
       });
     }
-  }
-
-  private extractError(err: unknown): string | null {
-    const e = err as { error?: { message?: string } | string };
-    if (typeof e.error === 'string') return e.error.replace(/^[^:]+:\s*/, '');
-    return e.error?.message?.replace(/^[^:]+:\s*/, '') ?? null;
   }
 
   cancel(): void {

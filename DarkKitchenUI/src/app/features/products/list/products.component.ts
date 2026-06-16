@@ -32,14 +32,13 @@ export class ProductsComponent implements OnInit {
     categories: ['']
   });
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canView = this.perms.has('GetProducts');
-  readonly canCreate = this.perms.has('CreateProduct');
-  readonly canEdit = this.perms.has('UpdateProduct');
-  readonly canToggleStatus = this.perms.has('UpdateProductStatus');
-  readonly canImport = this.perms.has('ImportProducts');
-  readonly canSeeMostRequested = this.perms.has('GetMostPopularProducts');
-  readonly canAddToCart = this.perms.has('PlaceOrder');
+  readonly canView = this.auth.hasPermission('GetProducts');
+  readonly canCreate = this.auth.hasPermission('CreateProduct');
+  readonly canEdit = this.auth.hasPermission('UpdateProduct');
+  readonly canToggleStatus = this.auth.hasPermission('UpdateProductStatus');
+  readonly canImport = this.auth.hasPermission('ImportProducts');
+  readonly canSeeMostRequested = this.auth.hasPermission('GetMostPopularProducts');
+  readonly canAddToCart = this.auth.hasPermission('PlaceOrder');
 
   ngOnInit(): void {
     if (this.canView) this.load();

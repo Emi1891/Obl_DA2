@@ -27,10 +27,10 @@ export class HomeComponent implements OnInit {
   isLoading = true;
 
   ngOnInit(): void {
-    const perms = new Set(this.auth.getPermissions());
+    const has = (p: string) => this.auth.hasPermission(p);
     const calls: Observable<Stat>[] = [];
 
-    if (perms.has('GetOrdersByStatus')) {
+    if (has('GetOrdersByStatus')) {
       calls.push(this.dashboard.getOrderCountByStatus('Pending').pipe(
         map(n => ({
           label: 'Pending Orders',
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
       ));
     }
 
-    if (perms.has('GetMyOrders')) {
+    if (has('GetMyOrders')) {
       calls.push(this.dashboard.getClientOrderCount().pipe(
         map(n => ({
           label: 'My Orders',
@@ -66,8 +66,8 @@ export class HomeComponent implements OnInit {
       ));
     }
 
-    if (perms.has('GetProducts')) {
-      calls.push(this.dashboard.getProductCount(!perms.has('UpdateProductStatus')).pipe(
+    if (has('GetProducts')) {
+      calls.push(this.dashboard.getProductCount(!has('UpdateProductStatus')).pipe(
         map(n => ({
           label: 'Products',
           value: fmt(n, String),
@@ -79,7 +79,7 @@ export class HomeComponent implements OnInit {
       ));
     }
 
-    if (perms.has('GetUsers')) {
+    if (has('GetUsers')) {
       calls.push(this.dashboard.getUserCount().pipe(
         map(n => ({
           label: 'Registered Users',
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
       ));
     }
 
-    if (perms.has('GetSalesReport')) {
+    if (has('GetSalesReport')) {
       calls.push(this.dashboard.getTotalRevenue().pipe(
         map(n => ({
           label: 'Total Revenue',
@@ -105,7 +105,7 @@ export class HomeComponent implements OnInit {
       ));
     }
 
-    if (perms.has('GetCurrentPromotions')) {
+    if (has('GetCurrentPromotions')) {
       calls.push(this.dashboard.getPromotionCount().pipe(
         map(n => ({
           label: 'Active Promotions',
@@ -118,7 +118,7 @@ export class HomeComponent implements OnInit {
       ));
     }
 
-    if (perms.has('UpdateShippingType')) {
+    if (has('UpdateShippingType')) {
       calls.push(this.dashboard.getShippingTypeCount().pipe(
         map(n => ({
           label: 'Shipping Types',

@@ -30,8 +30,7 @@ export class CartComponent implements OnInit {
   errorMessage = '';
   placedOrder: OrderResponse | null = null;
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canPlaceOrder = this.perms.has('PlaceOrder');
+  readonly canPlaceOrder = this.auth.hasPermission('PlaceOrder');
 
   checkoutForm = this.fb.group({
     street: ['', Validators.required],

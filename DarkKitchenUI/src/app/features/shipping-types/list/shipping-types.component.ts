@@ -17,9 +17,8 @@ export class ShippingTypesComponent implements OnInit {
   private readonly shippingTypeService = inject(ShippingTypeService);
   private readonly router = inject(Router);
 
-  private readonly perms = new Set(this.auth.getPermissions());
-  readonly canCreate = this.perms.has('CreateShippingType');
-  readonly canEdit = this.perms.has('UpdateShippingType');
+  readonly canCreate = this.auth.hasPermission('CreateShippingType');
+  readonly canEdit = this.auth.hasPermission('UpdateShippingType');
 
   list: ShippingType[] = [];
   isLoading = false;

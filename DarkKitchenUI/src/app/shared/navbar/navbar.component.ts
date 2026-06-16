@@ -80,10 +80,9 @@ export class NavbarComponent {
   readonly navItems: NavItem[] = this.filterByPermissions();
 
   private filterByPermissions(): NavItem[] {
-    const perms = new Set(this.authService.getPermissions());
     return this.allNavItems.filter(item => {
-      if (item.permission && !perms.has(item.permission)) return false;
-      if (item.anyPermission && !item.anyPermission.some(p => perms.has(p))) return false;
+      if (item.permission && !this.authService.hasPermission(item.permission)) return false;
+      if (item.anyPermission && !this.authService.hasAnyPermission(item.anyPermission)) return false;
       return true;
     });
   }

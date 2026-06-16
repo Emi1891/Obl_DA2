@@ -1,15 +1,13 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+import { Observable } from 'rxjs';
 import { Promotion, PromotionFilters, PromotionRequest } from '../models/promotion.model';
 import { environment } from '../../../environments/environment';
+import { emptyOn404 } from '../../shared/utils/http';
 
 @Injectable({ providedIn: 'root' })
 export class PromotionService {
   private readonly http = inject(HttpClient);
-  private readonly auth = inject(AuthService);
   private readonly apiUrl = `${environment.apiUrl}/promotions`;
 
   getAll(filters: PromotionFilters = {}): Observable<Promotion[]> {
@@ -18,32 +16,18 @@ export class PromotionService {
     if (filters.productLine) params = params.set('ProductLine', filters.productLine);
     if (filters.productName) params = params.set('ProductName', filters.productName);
 
-    return this.http.get<Promotion[]>(this.apiUrl, {
-      headers: this.auth.getAuthHeaders(),
-      params
-    }).pipe(
-      catchError(err => err?.status === 404 ? of([] as Promotion[]) : throwError(() => err))
-    );
+    return this.http.get<Promotion[]>(this.apiUrl, { params }).pipe(emptyOn404());
   }
 
   create(data: PromotionRequest) {
-    return this.http.post(this.apiUrl, data, {
-      headers: this.auth.getAuthHeaders(),
-      responseType: 'text'
-    });
+    return this.http.post(this.apiUrl, data, { responseType: 'text' });
   }
 
   update(id: number, data: PromotionRequest) {
-    return this.http.put(`${this.apiUrl}/${id}`, data, {
-      headers: this.auth.getAuthHeaders(),
-      responseType: 'text'
-    });
+    return this.http.put(`${this.apiUrl}/${id}`, data, { responseType: 'text' });
   }
 
   updateProducts(id: number, productIds: number[]) {
-    return this.http.put(`${this.apiUrl}/${id}/products`, { products: productIds }, {
-      headers: this.auth.getAuthHeaders(),
-      responseType: 'text'
-    });
+    return this.http.put(`${this.apiUrl}/${id}/products`, { products: productIds }, { responseType: 'text' });
   }
 }

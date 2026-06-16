@@ -133,6 +133,28 @@ export class ProductsComponent implements OnInit {
     this.router.navigate(['/products', product.id, 'edit'], { state: { product } });
   }
 
+  private readonly imageIndex = new Map<number, number>();
+
+  imageIdx(product: Product): number {
+    return this.imageIndex.get(product.id) ?? 0;
+  }
+
+  setImage(product: Product, index: number): void {
+    this.imageIndex.set(product.id, index);
+  }
+
+  prevImage(product: Product): void {
+    const count = product.imageUrl?.length ?? 0;
+    if (count === 0) return;
+    this.imageIndex.set(product.id, (this.imageIdx(product) - 1 + count) % count);
+  }
+
+  nextImage(product: Product): void {
+    const count = product.imageUrl?.length ?? 0;
+    if (count === 0) return;
+    this.imageIndex.set(product.id, (this.imageIdx(product) + 1) % count);
+  }
+
   trackById(_idx: number, p: Product) {
     return p.id;
   }

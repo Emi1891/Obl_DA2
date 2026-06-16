@@ -59,7 +59,16 @@
           <article class="product-card" [class.inactive]="!p.isActive">
             <div class="product-thumb">
               @if (p.imageUrl?.length) {
-                <img [src]="p.imageUrl![0]" [alt]="p.name" (error)="p.imageUrl = []" />
+                <img [src]="p.imageUrl![imageIdx(p)]" [alt]="p.name" />
+                @if (p.imageUrl!.length > 1) {
+                  <button type="button" class="thumb-nav prev" (click)="prevImage(p)" aria-label="Previous image">‹</button>
+                  <button type="button" class="thumb-nav next" (click)="nextImage(p)" aria-label="Next image">›</button>
+                  <div class="thumb-dots">
+                    @for (url of p.imageUrl!; track $index) {
+                      <span class="dot" [class.active]="$index === imageIdx(p)" (click)="setImage(p, $index)"></span>
+                    }
+                  </div>
+                }
               } @else {
                 <div class="thumb-placeholder">{{ p.name.charAt(0) || '?' }}</div>
               }

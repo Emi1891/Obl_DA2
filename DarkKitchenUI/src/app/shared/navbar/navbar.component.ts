@@ -55,7 +55,8 @@ export class NavbarComponent {
     {
       label: 'Promotions',
       route: '/promotions',
-      icon: ICONS.promotions
+      icon: ICONS.promotions,
+      permission: 'GetCurrentPromotions'
     },
     {
       label: 'Shipping Types',

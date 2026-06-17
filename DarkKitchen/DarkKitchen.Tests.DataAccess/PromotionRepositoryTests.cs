@@ -123,6 +123,54 @@ public class PromotionRepositoryTests
     }
 
     [TestMethod]
+    public void GetPromotions_WhenProductLineFilterMatches_ReturnsMatchingPromotions()
+    {
+        promotion!.Products = [new Product { Code = "P1", Name = "Pizza", Price = 100, ProductLine = "Pizzas", IsActive = true }];
+        context!.Promotion.Add(promotion);
+        context.SaveChanges();
+
+        var result = promotionRepository!.GetPromotions(null, "Pizzas", null);
+
+        Assert.AreEqual(1, result.Count());
+    }
+
+    [TestMethod]
+    public void GetPromotions_WhenProductLineFilterDoesNotMatch_ReturnsEmptyList()
+    {
+        promotion!.Products = [new Product { Code = "P1", Name = "Pizza", Price = 100, ProductLine = "Pizzas", IsActive = true }];
+        context!.Promotion.Add(promotion);
+        context.SaveChanges();
+
+        var result = promotionRepository!.GetPromotions(null, "Bebidas", null);
+
+        Assert.AreEqual(0, result.Count());
+    }
+
+    [TestMethod]
+    public void GetPromotions_WhenProductNameFilterMatches_ReturnsMatchingPromotions()
+    {
+        promotion!.Products = [new Product { Code = "P1", Name = "Pizza Muzzarella", Price = 100, IsActive = true }];
+        context!.Promotion.Add(promotion);
+        context.SaveChanges();
+
+        var result = promotionRepository!.GetPromotions(null, null, "Muzzarella");
+
+        Assert.AreEqual(1, result.Count());
+    }
+
+    [TestMethod]
+    public void GetPromotions_WhenProductNameFilterDoesNotMatch_ReturnsEmptyList()
+    {
+        promotion!.Products = [new Product { Code = "P1", Name = "Pizza Muzzarella", Price = 100, IsActive = true }];
+        context!.Promotion.Add(promotion);
+        context.SaveChanges();
+
+        var result = promotionRepository!.GetPromotions(null, null, "Hamburguesa");
+
+        Assert.AreEqual(0, result.Count());
+    }
+
+    [TestMethod]
     public void GetActiveForProducts_WhenActivePromotionCoversProduct_ReturnsPromotion()
     {
         var product = new Product { Id = 1, Code = "P1", Name = "P1", Price = 100, IsActive = true };

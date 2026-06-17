@@ -1,0 +1,106 @@
+<div class="orders-container">
+  <div class="orders-header">
+    <div class="header-text">
+      <h1>Orders</h1>
+      @if (canViewAll) {
+        <p class="subtitle">Manage every order placed in the system.</p>
+      } @else if (canViewMine) {
+        <p class="subtitle">Track the orders you've placed.</p>
+      } @else if (canViewDetails) {
+        <p class="subtitle">Look up an order by its ID to manage it.</p>
+      }
+    </div>
+  </div>
+
+  @if (!canList && !canViewDetails) {
+    <p class="empty">You don't have permission to view orders.</p>
+  } @else {
+    @if (canList) {
+      <form class="filters" [formGroup]="filtersForm" (ngSubmit)="load()">
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" formControlName="status">
+            <option value="">All</option>
+            @for (s of statusOptions; track s) {
+              <option [value]="s">{{ humanize(s) }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="dateFrom">From</label>
+          <input id="dateFrom" type="date" formControlName="dateFrom" />
+        </div>
+        <div class="field">
+          <label for="dateTo">To</label>
+          <input id="dateTo" type="date" formControlName="dateTo" />
+        </div>
+        @if (canViewAll) {
+          <div class="field grow">
+            <label for="address">Address</label>
+            <input id="address" type="text" formControlName="address" placeholder="e.g. Main St" />
+          </div>
+        }
+        <div class="filter-actions">
+          <button type="submit" class="primary-btn">Apply</button>
+          <button type="button" class="ghost-btn" (click)="clearFilters()">Clear</button>
+        </div>
+      </form>
+    } @else if (canViewDetails) {
+      <form class="lookup" [formGroup]="lookupForm" (ngSubmit)="lookupOrder()">
+        <div class="field grow">
+          <label for="orderId">Order ID</label>
+          <input id="orderId" type="number" min="1" formControlName="orderId" placeholder="e.g. 42" />
+        </div>
+        <div class="filter-actions">
+          <button type="submit" class="primary-btn">Find order</button>
+        </div>
+      </form>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (isLoading) {
+      <p class="loading">Loading...</p>
+    } @else if (orders.length === 0) {
+      <p class="empty">No orders to show.</p>
+    } @else {
+      <div class="orders-grid">
+        @for (order of orders; track trackById($index, order)) {
+          <article class="order-card">
+            <header class="order-head">
+              <div class="order-id">
+                <h3>Order #{{ order.id }}</h3>
+                @if (canViewAll) { <span class="client">Client #{{ order.clientId }}</span> }
+              </div>
+              <span class="status-badge" [class]="statusClass(order.status)">{{ humanize(order.status) }}</span>
+            </header>
+
+            <p class="date">{{ order.createdAt | date:'medium' }}</p>
+
+            <ul class="totals">
+              <li><span>Subtotal</span><span>${{ order.subtotal.toFixed(2) }}</span></li>
+              <li><span>Discount</span><span>-${{ order.discount.toFixed(2) }}</span></li>
+              <li><span>VAT</span><span>${{ order.iva.toFixed(2) }}</span></li>
+              <li><span>Shipping</span><span>${{ order.shippingCost.toFixed(2) }}</span></li>
+              <li class="grand"><span>Total</span><span>${{ order.total.toFixed(2) }}</span></li>
+            </ul>
+
+            @if (availableActions(order).length > 0) {
+              <div class="order-actions">
+                @for (action of availableActions(order); track action) {
+                  <button type="button" class="primary-btn"
+                          [disabled]="actingOrderId !== null"
+                          (click)="updateStatus(order, action)">
+                    Mark as {{ humanize(action) }}
+                  </button>
+                }
+              </div>
+            }
+          </article>
+        }
+      </div>
+    }
+  }
+</div>

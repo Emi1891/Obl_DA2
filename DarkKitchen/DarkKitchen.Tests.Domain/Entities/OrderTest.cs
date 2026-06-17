@@ -7,7 +7,7 @@ public class OrderTest
 {
     private readonly int id = 1;
     private readonly int clientId = 1;
-    private readonly string deliveryType = "express";
+    private readonly int shippingTypeId = 1;
     private readonly string street = "18 de Julio";
     private readonly string doorNumber = "1234";
     private readonly string apartment = "101";
@@ -22,7 +22,7 @@ public class OrderTest
         {
             Id = id,
             ClientId = clientId,
-            DeliveryType = deliveryType,
+            ShippingTypeId = shippingTypeId,
             Address = new Address { Street = street, DoorNumber = doorNumber, Apartment = apartment },
             Status = status,
             CreatedAt = createdAt
@@ -36,9 +36,9 @@ public class OrderTest
     }
 
     [TestMethod]
-    public void Order_WithValidData_HasCorrectDeliveryType()
+    public void Order_WithValidData_HasCorrectShippingTypeId()
     {
-        Assert.AreEqual(deliveryType, order!.DeliveryType);
+        Assert.AreEqual(shippingTypeId, order!.ShippingTypeId);
     }
 
     [TestMethod]
@@ -65,7 +65,7 @@ public class OrderTest
         var orderWithoutApartment = new Order
         {
             ClientId = clientId,
-            DeliveryType = deliveryType,
+            ShippingTypeId = shippingTypeId,
             Address = new Address { Street = street, DoorNumber = doorNumber },
             Status = status,
             CreatedAt = createdAt

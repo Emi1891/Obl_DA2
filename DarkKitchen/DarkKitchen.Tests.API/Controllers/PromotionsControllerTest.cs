@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using DarkKitchen.API.Controllers;
 using DarkKitchen.Domain.Exceptions;
 using DarkKitchen.Domain.Interfaces.Service;
 using DarkKitchen.Models.PromotionDTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -23,17 +25,26 @@ public class PromotionsControllerTest
         promotionServiceMock = new Mock<IPromotionService>(MockBehavior.Strict);
         promotionsController = new PromotionsController(promotionServiceMock.Object);
 
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.Name, "admin@gmail.com")
+        ], "mock"));
+
+        promotionsController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = user }
+        };
+
         validPromotion = new PromotionDto("Black Friday", 10, new DateTime(2026, 1, 25), new DateTime(2026, 1, 30));
-
-        promotionResponse = new PromotionResponseDto(promotionId, "Black Friday", 10, new DateTime(2026, 1, 25), new DateTime(2026, 1, 30));
-
+        promotionResponse = new PromotionResponseDto(promotionId, "Black Friday", 10, new DateTime(2026, 1, 25), new DateTime(2026, 1, 30), []);
         promotions = [promotionResponse];
     }
 
     [TestMethod]
     public void CreatePromotion_ValidData_ReturnsCreated()
     {
-        promotionServiceMock!.Setup(s => s.CreatePromotion(validPromotion));
+        promotionServiceMock!.Setup(s => s.CreatePromotion(validPromotion, "admin@gmail.com"));
+
         var result = promotionsController!.CreatePromotion(validPromotion);
         var resultObj = result as ObjectResult;
 
@@ -44,7 +55,7 @@ public class PromotionsControllerTest
     [TestMethod]
     public void CreatePromotion_AlreadyExists_ThrowsBadRequestException()
     {
-        promotionServiceMock!.Setup(s => s.CreatePromotion(validPromotion)).Throws(new BadRequestException("Promotion already exists."));
+        promotionServiceMock!.Setup(s => s.CreatePromotion(validPromotion, "admin@gmail.com")).Throws(new BadRequestException("Promotion already exists."));
 
         Assert.ThrowsException<BadRequestException>(() => promotionsController!.CreatePromotion(validPromotion));
     }
@@ -52,7 +63,8 @@ public class PromotionsControllerTest
     [TestMethod]
     public void UpdatePromotion_ExistingPromotion_ReturnsOk()
     {
-        promotionServiceMock!.Setup(s => s.UpdatePromotion(promotionId, validPromotion));
+        promotionServiceMock!.Setup(s => s.UpdatePromotion(promotionId, validPromotion, "admin@gmail.com"));
+
         var result = promotionsController!.UpdatePromotion(promotionId, validPromotion);
         var resultObj = result as ObjectResult;
 
@@ -63,7 +75,7 @@ public class PromotionsControllerTest
     [TestMethod]
     public void UpdatePromotion_PromotionNotFound_ThrowsNotFoundException()
     {
-        promotionServiceMock!.Setup(s => s.UpdatePromotion(promotionId, validPromotion)).Throws(new NotFoundException("Promotion not found."));
+        promotionServiceMock!.Setup(s => s.UpdatePromotion(promotionId, validPromotion, "admin@gmail.com")).Throws(new NotFoundException("Promotion not found."));
 
         Assert.ThrowsException<NotFoundException>(() => promotionsController!.UpdatePromotion(promotionId, validPromotion));
     }
@@ -72,7 +84,8 @@ public class PromotionsControllerTest
     public void UpdatePromotionProducts_ValidData_ReturnsOk()
     {
         var dto = new UpdatePromotionProductsDto([1, 2, 3]);
-        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products));
+        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products, "admin@gmail.com"));
+
         var result = promotionsController!.UpdatePromotionProducts(1, dto);
         var resultObj = result as ObjectResult;
 
@@ -84,7 +97,7 @@ public class PromotionsControllerTest
     public void UpdatePromotionProducts_PromotionNotFound_ThrowsNotFoundException()
     {
         var dto = new UpdatePromotionProductsDto([1, 2, 3]);
-        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products)).Throws(new NotFoundException("Promotion not found."));
+        promotionServiceMock!.Setup(s => s.UpdatePromotionProducts(1, dto.products, "admin@gmail.com")).Throws(new NotFoundException("Promotion not found."));
 
         Assert.ThrowsException<NotFoundException>(() => promotionsController!.UpdatePromotionProducts(1, dto));
     }
@@ -93,7 +106,8 @@ public class PromotionsControllerTest
     public void GetPromotions_ValidFilter_ReturnsOk()
     {
         promotionServiceMock!.Setup(s => s.GetPromotions(It.IsAny<PromotionFiltersDto>())).Returns(promotions!);
-        var result = promotionsController!.GetPromotions(new PromotionFiltersDto(null, null, null));
+
+        var result = promotionsController!.GetPromotions(new PromotionFiltersDto());
         var resultObj = result as ObjectResult;
 
         Assert.IsNotNull(resultObj);
@@ -105,6 +119,6 @@ public class PromotionsControllerTest
     {
         promotionServiceMock!.Setup(s => s.GetPromotions(It.IsAny<PromotionFiltersDto>())).Throws(new NotFoundException("No promotions found."));
 
-        Assert.ThrowsException<NotFoundException>(() => promotionsController!.GetPromotions(new PromotionFiltersDto(null, null, null)));
+        Assert.ThrowsException<NotFoundException>(() => promotionsController!.GetPromotions(new PromotionFiltersDto()));
     }
 }

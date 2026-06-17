@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using DarkKitchen.Domain.Entities;
 using DarkKitchen.Domain.Enums;
 using DarkKitchen.Domain.Exceptions;
@@ -13,12 +14,27 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public void CreateUser(UserDto newUser)
     {
-        ValidateUserFields(newUser.name, newUser.surname, newUser.email, newUser.password);
+        ValidateUserFields(newUser.name, newUser.surname, newUser.email, newUser.password, newUser.phone);
 
-        if(_userRepository.GetByEmail(newUser.email!) != null)
+        var existing = _userRepository.GetByEmail(newUser.email!);
+
+        if(existing != null)
         {
-            throw new BadRequestException("Email already in use.");
+            if(!existing.IsDeleted)
+            {
+                throw new BadRequestException("Email already in use.");
+            }
+
+            existing.Name = newUser.name!;
+            existing.Surname = newUser.surname!;
+            existing.Phone = newUser.phone!;
+            existing.Password = BCrypt.Net.BCrypt.HashPassword(newUser.password);
+            existing.IsDeleted = false;
+            _userRepository.Update(existing);
+            return;
         }
+
+        var role = _userRepository.HasAny() ? Role.Client : Role.Admin;
 
         var user = new User
         {
@@ -27,7 +43,7 @@ public class UserService(IUserRepository userRepository) : IUserService
             Email = newUser.email,
             Phone = newUser.phone,
             Password = BCrypt.Net.BCrypt.HashPassword(newUser.password),
-            Role = Role.Client,
+            Role = role,
         };
 
         _userRepository.Add(user);
@@ -68,7 +84,7 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public List<UserResponseDto> GetUsers(UserFiltersDto filter)
     {
-        List<User> users = _userRepository.GetUsers(filter.name, filter.surname);
+        List<User> users = _userRepository.GetUsers(filter.Name, filter.Surname);
 
         var result = users.Select(user => new UserResponseDto(user.Id, user.Name, user.Surname, user.Email, user.Phone, user.Role.ToString())).ToList();
 
@@ -79,17 +95,25 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         if(string.IsNullOrWhiteSpace(email))
         {
-            throw new EmailEmptyException();
+            throw new BadRequestException("Invalid email.");
         }
 
         User? user = _userRepository.GetByEmail(email);
 
         if(user == null)
         {
-            throw new UserNotFoundException();
+            throw new NotFoundException("User");
         }
 
         _userRepository.Delete(user);
+    }
+
+    public void EnsureNotSelf(string? targetEmail, string requesterEmail)
+    {
+        if(string.Equals(targetEmail, requesterEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new BadRequestException("A user cannot modify or delete their own account.");
+        }
     }
 
     public UserResponseDto? GetUserById(int id)
@@ -108,7 +132,9 @@ public class UserService(IUserRepository userRepository) : IUserService
     {
         ValidateUserFields(newUser.name, newUser.surname, newUser.email, newUser.password);
 
-        if(_userRepository.GetByEmail(newUser.email!) != null)
+        var existing = _userRepository.GetByEmail(newUser.email!);
+
+        if(existing != null && !existing.IsDeleted)
         {
             throw new BadRequestException("Email already in use.");
         }
@@ -116,6 +142,18 @@ public class UserService(IUserRepository userRepository) : IUserService
         if(!Enum.TryParse<Role>(newUser.role, ignoreCase: true, out var role))
         {
             throw new BadRequestException("Invalid role.");
+        }
+
+        if(existing != null)
+        {
+            existing.Name = newUser.name!;
+            existing.Surname = newUser.surname!;
+            existing.Phone = newUser.phone!;
+            existing.Password = BCrypt.Net.BCrypt.HashPassword(newUser.password);
+            existing.Role = role;
+            existing.IsDeleted = false;
+            _userRepository.Update(existing);
+            return;
         }
 
         var user = new User
@@ -131,52 +169,85 @@ public class UserService(IUserRepository userRepository) : IUserService
         _userRepository.Add(user);
     }
 
-    private static void ValidateUserFields(string? name, string? surname, string? email, string? password)
+    private static void ValidateUserFields(string? name, string? surname, string? email, string? password, string? phone = null)
     {
+        var message = string.Empty;
+
         if(string.IsNullOrEmpty(name))
         {
-            throw new NameEmptyException();
+            message = "Name can't be empty.";
         }
 
         if(string.IsNullOrEmpty(surname))
         {
-            throw new SurnameEmptyException();
+            message = "Surname can't be empty.";
         }
 
-        if(!email!.Contains('@'))
+        if(string.IsNullOrEmpty(email))
         {
-            throw new InvalidEmailException();
+            throw new BadRequestException("Invalid email format.");
+        }
+
+        if((!email!.Contains('@')) || email.Count(c => c == '@') > 2)
+        {
+            message = "Invalid email format.";
         }
 
         if(password!.Length > 25)
         {
-            throw new PasswordTooLongException();
+            message = "Password can't have more than 25 characters.";
         }
 
         if(password.Length < 15)
         {
-            throw new PasswordTooShortException();
+            message = "Password can't have less than 15 characters.";
         }
 
         if(!password.Any(char.IsUpper))
         {
-            throw new PasswordMissingUppercaseException();
+            message = "Password must contain at least one upper case.";
         }
 
         if(!password.Any(char.IsLower))
         {
-            throw new PasswordMissingLowercaseException();
+            message = "Password must contain at least one lower case.";
         }
 
         var specialChars = "!@#$%^&*()_+-=[]{};:,.<>?/~";
         if(!password.Any(specialChars.Contains))
         {
-            throw new PasswordMissingSpecialCharacterException();
+            message = "Password must contain at least one special character (!@#$%^&*()_+-=[]{};:,.<>?/~).";
         }
 
         if(!password.Any(char.IsDigit))
         {
-            throw new PasswordMissingNumberException();
+            message = "Password must contain at least one number.";
+        }
+
+        var previousCharWasDigit = false;
+        foreach(var letter in password)
+        {
+            if(char.IsDigit(letter) && previousCharWasDigit)
+            {
+                message = "Password can't contain a number sequence.";
+                break;
+            }
+
+            previousCharWasDigit = char.IsDigit(letter);
+        }
+
+        if(!string.IsNullOrEmpty(phone))
+        {
+            var digitsOnly = Regex.Replace(phone, @"[\s\-().]", string.Empty);
+            if(!Regex.IsMatch(digitsOnly, @"^\+[1-9]\d{6,14}$"))
+            {
+                message = "Phone number must include a country code and be in a valid format (e.g. +1 5551234567).";
+            }
+        }
+
+        if(!string.IsNullOrEmpty(message))
+        {
+            throw new BadRequestException(message);
         }
     }
 }

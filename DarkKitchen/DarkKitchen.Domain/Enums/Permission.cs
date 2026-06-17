@@ -51,6 +51,11 @@ public enum Permission
     SetOrderStatusToNotDelivered,
 
     /// <summary>
+    /// Permission to mark an order as delayed.
+    /// </summary>
+    SetOrderStatusToDelayed,
+
+    /// <summary>
     /// Permission to create a new user.
     /// </summary>
     CreateUser,
@@ -118,5 +123,30 @@ public enum Permission
     /// <summary>
     /// Permission to retrieve the sales report.
     /// </summary>
-    GetSalesReport
+    GetSalesReport,
+
+    /// <summary>
+    /// Permission to retrieve audit records.
+    /// </summary>
+    GetAuditRecords,
+
+    /// <summary>
+    /// Permission to retrieve the list of shipping types.
+    /// </summary>
+    GetShippingTypes,
+
+    /// <summary>
+    /// Permission to create a new shipping type.
+    /// </summary>
+    CreateShippingType,
+
+    /// <summary>
+    /// Permission to update an existing shipping type.
+    /// </summary>
+    UpdateShippingType,
+
+    /// <summary>
+    /// Permission to import products from external sources (JSON, XML, plugins).
+    /// </summary>
+    ImportProducts
 }

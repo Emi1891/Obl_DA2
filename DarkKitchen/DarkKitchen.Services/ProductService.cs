@@ -7,12 +7,13 @@ using DarkKitchen.Models.ProductDTOs;
 
 namespace DarkKitchen.Services;
 
-public class ProductService(IProductRepository repository, IPromotionService promotionService) : IProductService
+public class ProductService(IProductRepository repository, IPromotionService promotionService, IAuditService auditService) : IProductService
 {
     private readonly IProductRepository _repository = repository;
     private readonly IPromotionService _promotionService = promotionService;
+    private readonly IAuditService _auditService = auditService;
 
-    public void CreateProduct(CreateProductDto newProduct)
+    public void CreateProduct(CreateProductDto newProduct, string responsibleUser)
     {
         if(newProduct.name == null || newProduct.name == string.Empty)
         {
@@ -36,12 +37,13 @@ public class ProductService(IProductRepository repository, IPromotionService pro
             Images = newProduct.imageUrl!.Select(url => new ProductImage { Url = url }).ToList()
         };
         _repository.Add(product);
+        _auditService.LogChange("Product", product.Id, "Product created", responsibleUser);
     }
 
-    public void UpdateProduct(ProductDto updatedProduct)
+    public void UpdateProduct(ProductDto updatedProduct, string responsibleUser)
     {
         Product product = _repository.GetById(updatedProduct.id ?? 0)
-        ?? throw new NotFoundException("Product not found.");
+            ?? throw new NotFoundException("Product not found.");
 
         if(updatedProduct.name != null)
         {
@@ -79,6 +81,7 @@ public class ProductService(IProductRepository repository, IPromotionService pro
         }
 
         _repository.Update(product);
+        _auditService.LogChange("Product", product.Id, "Product updated", responsibleUser);
     }
 
     public ProductDto? GetByCode(string code)
@@ -94,14 +97,16 @@ public class ProductService(IProductRepository repository, IPromotionService pro
 
     public IEnumerable<ProductDto> GetProducts(ProductFilterDto filter)
     {
-        IEnumerable<Product> products = _repository.GetProducts(filter);
+        var products = _repository.GetProducts(filter).ToList();
 
-        if(!products.Any())
+        if(products.Count == 0)
         {
             throw new NotFoundException("No products found.");
         }
 
-        return _repository.GetProducts(filter).Select(p => new ProductDto(p.Id, p.Code, p.Name, p.Description, p.ProductLine, p.Category, p.Price, p.Images?.Select(i => i.Url).ToArray(), p.IsActive, p.UnitsSold));
+        var discounts = _promotionService.GetBestDiscountByProduct(products.Select(p => p.Id), DateTime.UtcNow.Date);
+
+        return products.Select(p => new ProductDto(p.Id, p.Code, p.Name, p.Description, p.ProductLine, p.Category, p.Price, p.Images?.Select(i => i.Url).ToArray(), p.IsActive, p.UnitsSold, discounts.TryGetValue(p.Id, out var discount) ? discount : null));
     }
 
     public IEnumerable<ProductDto> GetMostRequestedProducts(DateRangeDto dates)
@@ -116,12 +121,22 @@ public class ProductService(IProductRepository repository, IPromotionService pro
         return products.Select(p => new ProductDto(p.Id, p.Code, p.Name, p.Description, p.ProductLine, p.Category, p.Price, p.Images?.Select(i => i.Url).ToArray(), p.IsActive, p.UnitsSold));
     }
 
-    public void UpdateStatus(int id, ProductStatusDto status)
+    public void UpdateStatus(int id, ProductStatusDto status, string responsibleUser)
     {
         Product product = _repository.GetById(id)
             ?? throw new NotFoundException("Product not found.");
 
         product.IsActive = status.isActive;
+        _repository.Update(product);
+        _auditService.LogChange("Product", product.Id, "Product status updated", responsibleUser);
+    }
+
+    public void RegisterSale(int productId, int quantity)
+    {
+        Product product = _repository.GetById(productId)
+            ?? throw new NotFoundException("Product not found.");
+
+        product.UnitsSold += quantity;
         _repository.Update(product);
     }
 

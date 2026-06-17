@@ -1,3 +1,7 @@
 ﻿namespace DarkKitchen.Models.UserDTOs;
 
-public readonly record struct UserFiltersDto(string? name, string? surname);
+public sealed record UserFiltersDto
+{
+    public string? Name { get; set; }
+    public string? Surname { get; set; }
+}

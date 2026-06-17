@@ -1,0 +1,138 @@
+<div class="products-container">
+  <div class="products-header">
+    <div class="header-text">
+      <h1>Products</h1>
+      <p class="subtitle">Browse, filter and manage the catalog.</p>
+    </div>
+
+    <div class="header-actions">
+      @if (canAddToCart) {
+        <a routerLink="/cart" class="ghost-btn">
+          Checkout @if (cart.count() > 0) { <span class="cart-count">{{ cart.count() }}</span> }
+        </a>
+      }
+      @if (canSeeMostRequested) {
+        <a routerLink="/products/most-requested" class="ghost-btn">Most requested</a>
+      }
+      @if (canImport) {
+        <a routerLink="/products/import" class="ghost-btn">Import</a>
+      }
+      @if (canCreate) {
+        <a routerLink="/products/new" class="primary-btn">+ New product</a>
+      }
+    </div>
+  </div>
+
+  @if (!canView) {
+    <p class="empty">You don't have permission to view the product catalog.</p>
+  } @else {
+    <form class="filters" [formGroup]="filtersForm" (ngSubmit)="load()">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" type="text" formControlName="name" placeholder="e.g. Pizza" />
+      </div>
+      <div class="field">
+        <label for="productLine">Product line</label>
+        <input id="productLine" type="text" formControlName="productLine" placeholder="e.g. Main" />
+      </div>
+      <div class="field grow">
+        <label for="categories">Categories <span class="hint">(comma-separated)</span></label>
+        <input id="categories" type="text" formControlName="categories" placeholder="e.g. vegan, spicy" />
+      </div>
+      <div class="filter-actions">
+        <button type="submit" class="primary-btn">Apply</button>
+        <button type="button" class="ghost-btn" (click)="clearFilters()">Clear</button>
+      </div>
+    </form>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (isLoading) {
+      <p class="loading">Loading...</p>
+    } @else if (visibleProducts.length === 0) {
+      <p class="empty">No products match the current filters.</p>
+    } @else {
+      <div class="products-grid">
+        @for (p of visibleProducts; track trackById($index, p)) {
+          <article class="product-card" [class.inactive]="!p.isActive">
+            <div class="product-thumb">
+              @if (p.imageUrl?.length) {
+                <img [src]="p.imageUrl![imageIdx(p)]" [alt]="p.name" />
+                @if (p.imageUrl!.length > 1) {
+                  <button type="button" class="thumb-nav prev" (click)="prevImage(p)" aria-label="Previous image">‹</button>
+                  <button type="button" class="thumb-nav next" (click)="nextImage(p)" aria-label="Next image">›</button>
+                  <div class="thumb-dots">
+                    @for (url of p.imageUrl!; track $index) {
+                      <span class="dot" [class.active]="$index === imageIdx(p)" (click)="setImage(p, $index)"></span>
+                    }
+                  </div>
+                }
+              } @else {
+                <div class="thumb-placeholder">{{ p.name.charAt(0) || '?' }}</div>
+              }
+              @if (canToggleStatus) {
+                <span class="status-pill" [class.active]="p.isActive">
+                  {{ p.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              }
+            </div>
+
+            <div class="product-body">
+              <div class="product-row">
+                <h3>{{ p.name }}</h3>
+                @if (p.discountPercentage) {
+                  <span class="price price-discounted">
+                    <span class="original-price">${{ p.price.toFixed(2) }}</span>
+                    <span class="discounted-line">
+                      <span class="discount-badge">-{{ p.discountPercentage }}%</span>
+                      ${{ discountedPrice(p).toFixed(2) }}
+                    </span>
+                  </span>
+                } @else {
+                  <span class="price">${{ p.price.toFixed(2) }}</span>
+                }
+              </div>
+              <p class="code">#{{ p.code }}</p>
+              @if (p.description) {
+                <p class="description">{{ p.description }}</p>
+              }
+              <div class="tags">
+                @if (p.productLine) { <span class="tag">{{ p.productLine }}</span> }
+                @if (p.category) { <span class="tag">{{ p.category }}</span> }
+                @if (canSeeMostRequested) { <span class="tag muted">{{ p.unitsSold }} sold</span> }
+              </div>
+            </div>
+
+            <div class="product-actions">
+              @if (canAddToCart && p.isActive) {
+                @if (isSelecting(p)) {
+                  <div class="add-controls">
+                    <div class="stepper">
+                      <button type="button" (click)="decQty(p)" aria-label="Decrease quantity">−</button>
+                      <input type="text" inputmode="numeric" class="qty-input" appDigitsOnly [max]="maxQty"
+                             [value]="qtyFor(p)" (change)="setQty(p, $event)" aria-label="Quantity" />
+                      <button type="button" (click)="incQty(p)" aria-label="Increase quantity">+</button>
+                    </div>
+                    <button type="button" class="primary-btn add-btn" (click)="confirm(p)">Confirm</button>
+                  </div>
+                } @else {
+                  <button type="button" class="primary-btn" (click)="startAdding(p)">Add to cart</button>
+                }
+              }
+              @if (canToggleStatus) {
+                <button type="button" class="ghost-btn" (click)="toggleStatus(p)">
+                  {{ p.isActive ? 'Deactivate' : 'Activate' }}
+                </button>
+              }
+              @if (canEdit) {
+                <button type="button" class="primary-btn" (click)="edit(p)">Edit</button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+</div>

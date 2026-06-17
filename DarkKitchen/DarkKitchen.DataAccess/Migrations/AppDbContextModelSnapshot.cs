@@ -22,6 +22,37 @@ namespace DarkKitchen.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DarkKitchen.Domain.Entities.AuditRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ChangeDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponsibleUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditRecords");
+                });
+
             modelBuilder.Entity("DarkKitchen.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -36,10 +67,6 @@ namespace DarkKitchen.DataAccess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DeliveryType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
 
@@ -48,6 +75,9 @@ namespace DarkKitchen.DataAccess.Migrations
 
                     b.Property<decimal>("ShippingCost")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ShippingTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -208,17 +238,60 @@ namespace DarkKitchen.DataAccess.Migrations
                         new
                         {
                             Role = 0,
-                            Permissions = "[3,4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22]"
+                            Permissions = "[3,4,5,6,7,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]"
                         },
                         new
                         {
                             Role = 1,
-                            Permissions = "[0,1,14,19]"
+                            Permissions = "[0,1,15,20,25]"
                         },
                         new
                         {
                             Role = 2,
-                            Permissions = "[2,3,4,6,7,8]"
+                            Permissions = "[2,3,4,6,7,8,9]"
+                        });
+                });
+
+            modelBuilder.Entity("DarkKitchen.Domain.Entities.ShippingType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ShippingTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Express",
+                            Price = 250m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Same day",
+                            Price = 200m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Next day",
+                            Price = 180m
                         });
                 });
 
@@ -233,6 +306,9 @@ namespace DarkKitchen.DataAccess.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

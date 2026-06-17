@@ -6,7 +6,7 @@ public class Order
 {
     public int Id { get; set; }
     public int ClientId { get; set; }
-    public required string DeliveryType { get; set; }
+    public int ShippingTypeId { get; set; }
     public required Address Address { get; set; }
     public string Status { get; set; } = nameof(OrderStatus.Pending);
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -1,0 +1,76 @@
+<div class="users-container">
+  <div class="users-header">
+    <div class="header-text">
+      <h1>Users</h1>
+      <p class="subtitle">Manage staff and customer accounts.</p>
+    </div>
+
+    @if (canCreate) {
+      <a routerLink="/users/new" class="primary-btn">+ New user</a>
+    }
+  </div>
+
+  @if (!canView) {
+    <p class="empty">You don't have permission to view users.</p>
+  } @else {
+    <form class="filters" [formGroup]="filtersForm" (ngSubmit)="load()">
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" type="text" formControlName="name" placeholder="e.g. Juan" />
+      </div>
+      <div class="field">
+        <label for="surname">Surname</label>
+        <input id="surname" type="text" formControlName="surname" placeholder="e.g. Pérez" />
+      </div>
+      <div class="filter-actions">
+        <button type="submit" class="primary-btn">Apply</button>
+        <button type="button" class="ghost-btn" (click)="clearFilters()">Clear</button>
+      </div>
+    </form>
+
+    @if (errorMessage) { <p class="error">{{ errorMessage }}</p> }
+    @if (feedback) { <p class="success">{{ feedback }}</p> }
+
+    @if (isLoading) {
+      <p class="loading">Loading...</p>
+    } @else if (list.length === 0) {
+      <p class="empty">No users match the current filters.</p>
+    } @else {
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of list; track trackByEmail($index, u)) {
+              <tr>
+                <td>
+                  <span class="user-name">{{ u.name }} {{ u.surname }}</span>
+                </td>
+                <td class="muted">{{ u.email }}</td>
+                <td class="muted">{{ u.phone | phoneFormat }}</td>
+                <td>
+                  <span [class]="roleClass(u.role)">{{ u.role }}</span>
+                </td>
+                <td class="cell-actions">
+                  @if (canEdit) {
+                    <button type="button" class="ghost-btn small" (click)="edit(u)">Edit</button>
+                  }
+                  @if (canDelete) {
+                    <button type="button" class="danger-btn small" (click)="remove(u)">Delete</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</div>

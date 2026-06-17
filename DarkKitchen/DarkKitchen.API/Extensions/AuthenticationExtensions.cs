@@ -21,7 +21,8 @@ public static class AuthenticationExtensions
                         Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
                     ValidateIssuer = true,
                     ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    NameClaimType = "name"
                 };
             });
 

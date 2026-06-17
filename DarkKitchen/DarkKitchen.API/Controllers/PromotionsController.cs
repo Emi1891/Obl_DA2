@@ -16,7 +16,8 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [HttpPost]
     public IActionResult CreatePromotion([FromBody] PromotionDto newPromotion)
     {
-        _promotionService.CreatePromotion(newPromotion);
+        var responsibleUser = User.Identity!.Name!;
+        _promotionService.CreatePromotion(newPromotion, responsibleUser);
         return Created(string.Empty, newPromotion);
     }
 
@@ -24,7 +25,8 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [HttpPut("{id}")]
     public IActionResult UpdatePromotion(int id, [FromBody] PromotionDto updatedPromotion)
     {
-        _promotionService.UpdatePromotion(id, updatedPromotion);
+        var responsibleUser = User.Identity!.Name!;
+        _promotionService.UpdatePromotion(id, updatedPromotion, responsibleUser);
         return Ok("Promotion updated correctly.");
     }
 
@@ -32,7 +34,8 @@ public class PromotionsController(IPromotionService promotionService) : Controll
     [HttpPut("{id}/products")]
     public IActionResult UpdatePromotionProducts(int id, [FromBody] UpdatePromotionProductsDto dto)
     {
-        _promotionService.UpdatePromotionProducts(id, dto.products);
+        var responsibleUser = User.Identity!.Name!;
+        _promotionService.UpdatePromotionProducts(id, dto.products, responsibleUser);
         return Ok("Promotion products updated correctly.");
     }
 

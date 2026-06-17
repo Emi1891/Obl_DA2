@@ -12,7 +12,7 @@ public class ExceptionFilter : IExceptionFilter
             typeof(BadRequestException),
             new ObjectResult(new
             {
-                Message = "An error occurred."
+                Message = "An error occurred: "
             })
             {
                 StatusCode = 400
@@ -22,7 +22,7 @@ public class ExceptionFilter : IExceptionFilter
             typeof(UnauthorizedException),
             new ObjectResult(new
             {
-                Message = "Unauthorized access."
+                Message = "Unauthorized access: "
             })
             {
                 StatusCode = 401
@@ -32,7 +32,7 @@ public class ExceptionFilter : IExceptionFilter
             typeof(AccessDeniedException),
             new ObjectResult(new
             {
-                Message = "Not allowed to access this resource."
+                Message = "Not allowed to access this resource: "
             })
             {
                 StatusCode = 403
@@ -42,7 +42,7 @@ public class ExceptionFilter : IExceptionFilter
             typeof(NotFoundException),
             new ObjectResult(new
             {
-                Message = "Resource not found."
+                Message = "Resource not found: "
             })
             {
                 StatusCode = 404
@@ -60,7 +60,7 @@ public class ExceptionFilter : IExceptionFilter
         {
             context.Result = new ObjectResult(new
             {
-                Message = "Internal server error."
+                Message = "Internal server error" + ": " + exception.Message
             })
             {
                 StatusCode = 500
@@ -68,7 +68,14 @@ public class ExceptionFilter : IExceptionFilter
         }
         else
         {
-            context.Result = error;
+            var objectResult = (ObjectResult)error;
+            context.Result = new ObjectResult(new
+            {
+                Message = ((dynamic)objectResult.Value!).Message + exception.Message
+            })
+            {
+                StatusCode = objectResult.StatusCode
+            };
         }
     }
 }

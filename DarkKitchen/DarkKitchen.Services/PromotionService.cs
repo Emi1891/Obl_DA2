@@ -6,11 +6,12 @@ using DarkKitchen.Models.PromotionDTOs;
 
 namespace DarkKitchen.Services;
 
-public class PromotionService(IPromotionRepository promotionRepository) : IPromotionService
+public class PromotionService(IPromotionRepository promotionRepository, IAuditService auditService) : IPromotionService
 {
     private readonly IPromotionRepository _promotionRepository = promotionRepository;
+    private readonly IAuditService _auditService = auditService;
 
-    public void CreatePromotion(PromotionDto newPromotion)
+    public void CreatePromotion(PromotionDto newPromotion, string responsibleUser)
     {
         if(string.IsNullOrEmpty(newPromotion.name))
         {
@@ -36,9 +37,10 @@ public class PromotionService(IPromotionRepository promotionRepository) : IPromo
         };
 
         _promotionRepository.Add(promotion);
+        _auditService.LogChange("Promotion", promotion.Id, "Promotion created", responsibleUser);
     }
 
-    public void UpdatePromotion(int id, PromotionDto updatedPromotion)
+    public void UpdatePromotion(int id, PromotionDto updatedPromotion, string responsibleUser)
     {
         var promotion = _promotionRepository.GetById(id)
             ?? throw new NotFoundException("Promotion not found.");
@@ -49,9 +51,10 @@ public class PromotionService(IPromotionRepository promotionRepository) : IPromo
         promotion.DateTo = updatedPromotion.dateTo;
 
         _promotionRepository.Update(promotion);
+        _auditService.LogChange("Promotion", promotion.Id, "Promotion updated", responsibleUser);
     }
 
-    public void UpdatePromotionProducts(int promotionId, List<int> productIds)
+    public void UpdatePromotionProducts(int promotionId, List<int> productIds, string responsibleUser)
     {
         var promotion = _promotionRepository.GetById(promotionId);
         if(promotion == null)
@@ -60,18 +63,14 @@ public class PromotionService(IPromotionRepository promotionRepository) : IPromo
         }
 
         _promotionRepository.SetProducts(promotionId, productIds);
+        _auditService.LogChange("Promotion", promotion.Id, "Promotion products updated", responsibleUser);
     }
 
     public List<PromotionResponseDto> GetPromotions(PromotionFiltersDto filter)
     {
-        if(filter.date == null)
-        {
-            throw new BadRequestException("Date is required.");
-        }
+        var promotions = _promotionRepository.GetPromotions(filter.Date, filter.ProductLine, filter.ProductName);
 
-        var promotions = _promotionRepository.GetPromotions(filter.date, filter.productLine, filter.productName);
-
-        return promotions.Select(p => new PromotionResponseDto(p.Id, p.Name, p.DiscountPercentage, p.DateFrom, p.DateTo)).ToList();
+        return promotions.Select(p => new PromotionResponseDto(p.Id, p.Name, p.DiscountPercentage, p.DateFrom, p.DateTo, p.Products.Select(x => x.Code).ToList())).ToList();
     }
 
     public Dictionary<int, int> GetBestDiscountByProduct(IEnumerable<int> productIds, DateTime date)

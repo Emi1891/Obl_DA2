@@ -1,0 +1,40 @@
+<div class="report-container">
+  <div class="report-header">
+    <div class="header-text">
+      <h1>Sales report</h1>
+      <p class="subtitle">Revenue broken down by month and client.</p>
+    </div>
+  </div>
+
+  @if (errorMessage) { <p class="error">{{ errorMessage }}</p> }
+
+  @if (isLoading) {
+    <p class="loading">Loading...</p>
+  } @else if (!report || report.months.length === 0) {
+    <p class="empty">No sales have been registered yet.</p>
+  } @else {
+    <div class="grand-total">
+      <span class="grand-total-label">Total revenue</span>
+      <span class="grand-total-value">${{ report.total.toFixed(2) }}</span>
+    </div>
+
+    <div class="months">
+      @for (m of report.months; track m.year * 100 + m.month) {
+        <section class="month-card">
+          <header class="month-header">
+            <h2>{{ monthLabel(m.year, m.month) }}</h2>
+            <span class="month-total">${{ m.total.toFixed(2) }}</span>
+          </header>
+          <ul class="lines">
+            @for (line of m.lines; track line.clientName) {
+              <li class="line">
+                <span class="client">{{ line.clientName }}</span>
+                <span class="amount">${{ line.total.toFixed(2) }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+  }
+</div>

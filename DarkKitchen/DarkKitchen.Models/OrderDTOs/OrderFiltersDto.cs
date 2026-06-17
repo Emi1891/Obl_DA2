@@ -1,3 +1,8 @@
 ﻿namespace DarkKitchen.Models.OrderDTOs;
 
-public readonly record struct OrderFiltersDto(DateTime? dateFrom, DateTime? dateTo, string? status);
+public sealed record OrderFiltersDto
+{
+    public DateTime? DateFrom { get; set; }
+    public DateTime? DateTo { get; set; }
+    public string? Status { get; set; }
+}

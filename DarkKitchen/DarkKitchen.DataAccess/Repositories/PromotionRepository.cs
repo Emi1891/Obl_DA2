@@ -36,11 +36,21 @@ public class PromotionRepository(AppDbContext context) : IPromotionRepository
 
     public IEnumerable<Promotion> GetPromotions(DateTime? date, string? productLine, string? productName)
     {
-        var query = context.Promotion.AsQueryable();
+        var query = context.Promotion.Include(p => p.Products).AsQueryable();
 
         if(date.HasValue)
         {
             query = query.Where(p => p.DateFrom <= date && p.DateTo >= date);
+        }
+
+        if(!string.IsNullOrEmpty(productLine))
+        {
+            query = query.Where(p => p.Products.Any(prod => prod.ProductLine == productLine));
+        }
+
+        if(!string.IsNullOrEmpty(productName))
+        {
+            query = query.Where(p => p.Products.Any(prod => prod.Name.Contains(productName)));
         }
 
         return query.ToList();

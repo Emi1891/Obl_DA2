@@ -34,4 +34,9 @@ public enum OrderStatus
     /// Order could not be delivered to the customer.
     /// </summary>
     NotDelivered,
+
+    /// <summary>
+    /// Order has been delayed by the food preparer.
+    /// </summary>
+    Delayed,
 }

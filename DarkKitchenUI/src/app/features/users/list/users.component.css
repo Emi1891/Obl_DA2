@@ -1,0 +1,171 @@
+.users-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  color: var(--dk-text);
+}
+
+.subtitle {
+  color: var(--dk-subtext);
+  font-size: 0.95rem;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+label {
+  color: var(--dk-subtext);
+  font-size: 0.8rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+input {
+  width: 100%;
+  padding: 9px 12px;
+  background-color: var(--dk-crust);
+  color: var(--dk-text);
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: system-ui, sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus {
+  border-color: var(--dk-accent);
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.table-wrap {
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Josefin Sans", system-ui;
+}
+
+.users-table thead {
+  background-color: var(--dk-crust);
+}
+
+.users-table th {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dk-subtext);
+}
+
+.users-table td {
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  color: var(--dk-text);
+  border-top: 1px solid var(--dk-border);
+}
+
+.users-table tbody tr:hover {
+  background-color: rgba(255, 111, 97, 0.04);
+}
+
+.user-name {
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--dk-subtext);
+  font-size: 0.85rem;
+}
+
+.role {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.role-admin {
+  background-color: rgba(255, 111, 97, 0.15);
+  color: var(--dk-accent);
+}
+
+.role-client {
+  background-color: rgba(218, 165, 32, 0.15);
+  color: var(--dk-accent-2);
+}
+
+.role-dispatcher {
+  background-color: rgba(160, 136, 112, 0.15);
+  color: var(--dk-subtext);
+}
+
+.users-table th.actions-col {
+  text-align: right;
+}
+
+.cell-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cell-actions button + button {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 720px) {
+  .users-container {
+    padding: 2rem 1.25rem;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .users-table th,
+  .users-table td {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+}

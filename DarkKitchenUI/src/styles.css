@@ -1,0 +1,231 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Chelsea+Market&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Playfair+Display:ital,wght@1,400..900&display=swap');
+
+:root {
+  /* Warm dark palette — darkness order: crust < base < surface < surface-alt */
+  --dk-crust:        #141414;  /* sidebar / darkest chrome           */
+  --dk-base:         #1c1c1c;  /* page background                    */
+  --dk-surface:      #252525;  /* cards, panels                      */
+  --dk-surface-alt:  #333333;  /* input backgrounds, elevated items  */
+  --dk-border:       #3d3d3d;
+
+  --dk-text:         #f5e8d8;  /* warm beige — primary text          */
+  --dk-subtext:      #a08870;  /* muted warm tone — secondary text   */
+
+  --dk-accent:       #ff6f61;  /* muted coral — primary accent       */
+  --dk-accent-2:     #daa520;  /* golden yellow — secondary accent   */
+  --dk-accent-hover: #ff4500;  /* burnt orange — hover / pressed     */
+
+  --dk-error:        #ff6f61;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--dk-base);
+  color: var(--dk-text);
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: italic;
+}
+
+small,
+p,
+.description {
+  font-family: "Josefin Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.primary-btn,
+.ghost-btn,
+.danger-btn {
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.primary-btn {
+  background-color: var(--dk-accent);
+  color: var(--dk-crust);
+}
+
+.primary-btn:hover:not(:disabled) {
+  background-color: var(--dk-accent-hover);
+}
+
+.primary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ghost-btn {
+  background-color: transparent;
+  color: var(--dk-text);
+  border-color: var(--dk-border);
+}
+
+.ghost-btn:hover {
+  border-color: var(--dk-accent);
+  color: var(--dk-accent);
+}
+
+.danger-btn {
+  background-color: transparent;
+  color: var(--dk-error);
+  border-color: var(--dk-border);
+}
+
+.danger-btn:hover {
+  border-color: var(--dk-error);
+  background-color: rgba(255, 111, 97, 0.1);
+}
+
+.small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  transition: color 0.15s;
+}
+
+.back-link:hover {
+  color: var(--dk-text);
+}
+
+.form-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 640px;
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-card h2 {
+  color: var(--dk-text);
+  font-size: 1.5rem;
+}
+
+.form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-card .row.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-card label {
+  color: var(--dk-subtext);
+  font-size: 0.85rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+.form-card input,
+.form-card textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: var(--dk-crust);
+  color: var(--dk-text);
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: system-ui, sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+
+.form-card input:focus,
+.form-card textarea:focus {
+  border-color: var(--dk-accent);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.error,
+.success {
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.9rem;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.error {
+  color: var(--dk-error);
+  background-color: rgba(255, 111, 97, 0.1);
+  border: 1px solid var(--dk-error);
+}
+
+.success {
+  color: var(--dk-accent-2);
+  background-color: rgba(218, 165, 32, 0.1);
+  border: 1px solid var(--dk-accent-2);
+}
+
+.empty,
+.loading {
+  color: var(--dk-subtext);
+  text-align: center;
+  padding: 2rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+@media (max-width: 720px) {
+  .form-container {
+    padding: 2rem 1.25rem;
+  }
+
+  .form-card .row.two-cols {
+    grid-template-columns: 1fr;
+  }
+}

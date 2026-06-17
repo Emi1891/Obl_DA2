@@ -1,0 +1,100 @@
+.importer-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.importer-card {
+  width: 100%;
+  max-width: 520px;
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+h2 {
+  color: var(--dk-text);
+  font-size: 1.5rem;
+}
+
+.section-title {
+  color: var(--dk-text);
+  font-size: 1.5rem;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--dk-border);
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.subtitle {
+  color: var(--dk-subtext);
+  font-size: 0.9rem;
+  font-family: "Josefin Sans", system-ui;
+}
+
+label {
+  color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.85rem;
+}
+
+select {
+  padding: 10px 12px;
+  background-color: var(--dk-crust);
+  color: var(--dk-text);
+  border: 1px solid var(--dk-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: system-ui, sans-serif;
+  outline: none;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: var(--dk-accent);
+}
+
+.file-drop {
+  border: 1px dashed var(--dk-border);
+  background-color: var(--dk-crust);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.file-drop:hover {
+  border-color: var(--dk-accent);
+  background-color: rgba(255, 111, 97, 0.05);
+}
+
+.file-name {
+  color: var(--dk-text);
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 600;
+}
+
+.file-meta {
+  color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
+  font-size: 0.85rem;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  color: var(--dk-subtext);
+  font-family: "Josefin Sans", system-ui;
+  padding: 1rem 0;
+}

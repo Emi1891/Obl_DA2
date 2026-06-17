@@ -1,3 +1,8 @@
 ﻿namespace DarkKitchen.Models.PromotionDTOs;
 
-public readonly record struct PromotionFiltersDto(DateTime? date, string? productLine, string? productName);
+public sealed record PromotionFiltersDto
+{
+    public DateTime? Date { get; init; }
+    public string? ProductLine { get; init; }
+    public string? ProductName { get; init; }
+}

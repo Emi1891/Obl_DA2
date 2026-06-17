@@ -9,7 +9,6 @@ namespace DarkKitchen.API.Controllers;
 
 [Route("api/products")]
 [ApiController]
-
 public class ProductsController(IProductService productService) : ControllerBase
 {
     private readonly IProductService _productService = productService;
@@ -18,7 +17,8 @@ public class ProductsController(IProductService productService) : ControllerBase
     [HttpPost]
     public IActionResult CreateProduct([FromBody] CreateProductDto newProduct)
     {
-        _productService.CreateProduct(newProduct);
+        var responsibleUser = User.Identity!.Name!;
+        _productService.CreateProduct(newProduct, responsibleUser);
         return Created("Product created correctly.", null);
     }
 
@@ -26,15 +26,16 @@ public class ProductsController(IProductService productService) : ControllerBase
     [HttpPut]
     public IActionResult UpdateProduct([FromBody] ProductDto product)
     {
-        _productService.UpdateProduct(product);
+        var responsibleUser = User.Identity!.Name!;
+        _productService.UpdateProduct(product, responsibleUser);
         return Ok("Product updated correctly.");
     }
 
     [Authorize(Policy = nameof(Permission.GetProducts))]
     [HttpGet]
-    public IActionResult GetProducts([FromQuery] ProductFilterDto filter)
+    public IActionResult GetProducts([FromQuery] ProductFilterDto filters)
     {
-        var products = _productService.GetProducts(filter);
+        var products = _productService.GetProducts(filters);
         return Ok(products);
     }
 
@@ -50,7 +51,8 @@ public class ProductsController(IProductService productService) : ControllerBase
     [HttpPatch("{id}")]
     public IActionResult UpdateStatus(int id, [FromBody] ProductStatusDto status)
     {
-        _productService.UpdateStatus(id, status);
+        var responsibleUser = User.Identity!.Name!;
+        _productService.UpdateStatus(id, status, responsibleUser);
         return Ok("Product status updated correctly.");
     }
 }

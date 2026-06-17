@@ -1,0 +1,43 @@
+<div class="report-container">
+  <div class="report-header">
+    <div>
+      <button type="button" class="back-link" (click)="back()">← Back to products</button>
+      <h1>Most requested products</h1>
+      <p class="subtitle">See which products were the bestsellers in a given period.</p>
+    </div>
+  </div>
+
+  <form class="filters" [formGroup]="form" (ngSubmit)="load()">
+    <div class="field">
+      <label for="dateFrom">From</label>
+      <input id="dateFrom" type="date" formControlName="dateFrom" />
+    </div>
+    <div class="field">
+      <label for="dateTo">To</label>
+      <input id="dateTo" type="date" formControlName="dateTo" />
+    </div>
+    <button type="submit" class="primary-btn" [disabled]="form.invalid">Apply</button>
+  </form>
+
+  @if (errorMessage) { <p class="error">{{ errorMessage }}</p> }
+
+  @if (isLoading) {
+    <p class="loading">Loading...</p>
+  } @else if (products.length === 0) {
+    <p class="empty">No products were ordered in this range.</p>
+  } @else {
+    <ol class="ranking">
+      @for (p of products; track p.id; let i = $index) {
+        <li class="rank-row">
+          <span class="rank">{{ rankIcon(i) }}</span>
+          <div class="rank-info">
+            <h3>{{ p.name }}</h3>
+            <p class="code">#{{ p.code }}</p>
+          </div>
+          <span class="units">{{ p.unitsSold }} sold</span>
+          <span class="price">${{ p.price.toFixed(2) }}</span>
+        </li>
+      }
+    </ol>
+  }
+</div>

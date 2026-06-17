@@ -1,3 +1,8 @@
 namespace DarkKitchen.Models.ProductDTOs;
 
-public readonly record struct ProductFilterDto(string? productLine, List<string>? categories, string? name);
+public sealed record ProductFilterDto
+{
+    public string? ProductLine { get; set; }
+    public List<string>? Categories { get; set; }
+    public string? Name { get; set; }
+}

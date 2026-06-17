@@ -19,7 +19,7 @@ public class SessionService(
     public LoginResponseDto Login(LoginDto loginDto)
     {
         var user = userRepository.GetByEmail(loginDto.email!);
-        if(user == null || !BCrypt.Net.BCrypt.Verify(loginDto.password, user.Password))
+        if(user == null || user.IsDeleted || !BCrypt.Net.BCrypt.Verify(loginDto.password, user.Password))
         {
             throw new UnauthorizedException("Invalid credentials.");
         }
@@ -38,7 +38,8 @@ public class SessionService(
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("name", user.Name)
         };
         claims.AddRange(permissions.Select(p => new Claim("permission", p.ToString())));
 

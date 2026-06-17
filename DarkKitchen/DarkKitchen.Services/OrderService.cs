@@ -7,26 +7,23 @@ using DarkKitchen.Models.OrderDTOs;
 
 namespace DarkKitchen.Services;
 
-public class OrderService(IOrderRepository orderRepository, IUserService userService, IProductService productService) : IOrderService
+public class OrderService(IOrderRepository orderRepository, IUserService userService, IProductService productService, IShippingTypeRepository shippingTypeRepository) : IOrderService
 {
     private readonly IOrderRepository orderRepository = orderRepository;
     private readonly IUserService userService = userService;
     private readonly IProductService productService = productService;
-    private readonly decimal expressDeliveryPrice = 500;
-    private readonly decimal nextDayDeliveryPrice = 250;
+    private readonly IShippingTypeRepository shippingTypeRepository = shippingTypeRepository;
     private readonly decimal ivaRate = 0.22m;
 
     public OrderResponseDto CreateOrder(OrderDto newOrder, int clientId)
     {
         if(newOrder.products.Count == 0)
         {
-            throw new BadRequestException("Order must have at least one product.");
+            throw new BadRequestException("An order must have at least one product.");
         }
 
-        if(newOrder.deliveryType != "express" && newOrder.deliveryType != "24hs")
-        {
-            throw new BadRequestException("Invalid delivery type.");
-        }
+        var shippingType = shippingTypeRepository.GetById(newOrder.shippingTypeId)
+            ?? throw new NotFoundException("Shipping type not found.");
 
         if(string.IsNullOrEmpty(newOrder.address.street))
         {
@@ -69,12 +66,12 @@ public class OrderService(IOrderRepository orderRepository, IUserService userSer
         }
 
         var iva = (subtotal - discount) * ivaRate;
-        var shippingCost = newOrder.deliveryType == "express" ? expressDeliveryPrice : nextDayDeliveryPrice;
+        var shippingCost = shippingType.Price;
 
         var order = new Order
         {
             ClientId = clientId,
-            DeliveryType = newOrder.deliveryType,
+            ShippingTypeId = newOrder.shippingTypeId,
             Address = new Address
             {
                 Street = newOrder.address.street,
@@ -91,19 +88,24 @@ public class OrderService(IOrderRepository orderRepository, IUserService userSer
 
         orderRepository.Add(order);
 
+        foreach(var line in orderProducts)
+        {
+            productService.RegisterSale(line.ProductId, line.Quantity);
+        }
+
         return new OrderResponseDto(order.Id, order.ClientId, order.Status, order.CreatedAt, order.Subtotal, order.Discount, order.Iva, order.ShippingCost, order.Total, []);
     }
 
     public List<OrderResponseDto> GetClientOrders(int clientId, OrderFiltersDto filter)
     {
-        var orders = orderRepository.GetClientOrders(clientId, filter.dateFrom, filter.dateTo, filter.status);
+        var orders = orderRepository.GetClientOrders(clientId, filter.DateFrom, filter.DateTo, filter.Status);
 
         return orders.Select(o => new OrderResponseDto(o.Id, o.ClientId, o.Status, o.CreatedAt, o.Subtotal, o.Discount, o.Iva, o.ShippingCost, o.Total, [])).ToList();
     }
 
     public List<OrderResponseDto> GetOrdersByStatus(OrderFilterByStatusDto filter)
     {
-        var orders = orderRepository.GetOrdersByStatus(filter.dateFrom, filter.dateTo, filter.address, filter.status);
+        var orders = orderRepository.GetOrdersByStatus(filter.DateFrom, filter.DateTo, filter.Address, filter.Status);
 
         return orders.Select(o => new OrderResponseDto(o.Id, o.ClientId, o.Status, o.CreatedAt, o.Subtotal, o.Discount, o.Iva, o.ShippingCost, o.Total, [])).ToList();
     }
@@ -116,7 +118,7 @@ public class OrderService(IOrderRepository orderRepository, IUserService userSer
         return new OrderResponseDto(order.Id, order.ClientId, order.Status, order.CreatedAt, order.Subtotal, order.Discount, order.Iva, order.ShippingCost, order.Total, []);
     }
 
-    public void UpdateOrderStatus(int orderId, UpdateOrderStatusDto newStatus, List<Permission> userPermissions)
+    public UpdateOrderStatusResponseDto UpdateOrderStatus(int orderId, UpdateOrderStatusDto newStatus, List<Permission> userPermissions)
     {
         if(!Enum.TryParse<OrderStatus>(newStatus.status, out var status))
         {
@@ -130,6 +132,7 @@ public class OrderService(IOrderRepository orderRepository, IUserService userSer
             OrderStatus.OnItsWay => Permission.SetOrderStatusToOnItsWay,
             OrderStatus.Delivered => Permission.SetOrderStatusToDelivered,
             OrderStatus.NotDelivered => Permission.SetOrderStatusToNotDelivered,
+            OrderStatus.Delayed => Permission.SetOrderStatusToDelayed,
             _ => throw new BadRequestException("Invalid order status.")
         };
 
@@ -147,14 +150,15 @@ public class OrderService(IOrderRepository orderRepository, IUserService userSer
         }
 
         var validTransitions = new Dictionary<OrderStatus, List<OrderStatus>>
-    {
-        { OrderStatus.Pending, [OrderStatus.Prepared, OrderStatus.Canceled] },
-        { OrderStatus.Prepared, [OrderStatus.OnItsWay] },
-        { OrderStatus.OnItsWay, [OrderStatus.Delivered, OrderStatus.NotDelivered] },
-        { OrderStatus.Canceled, [] },
-        { OrderStatus.Delivered, [] },
-        { OrderStatus.NotDelivered, [] }
-    };
+        {
+            { OrderStatus.Pending, [OrderStatus.Prepared, OrderStatus.Canceled, OrderStatus.Delayed] },
+            { OrderStatus.Prepared, [OrderStatus.OnItsWay] },
+            { OrderStatus.OnItsWay, [OrderStatus.Delivered, OrderStatus.NotDelivered] },
+            { OrderStatus.Canceled, [] },
+            { OrderStatus.Delivered, [] },
+            { OrderStatus.NotDelivered, [] },
+            { OrderStatus.Delayed, [OrderStatus.Prepared, OrderStatus.Canceled] }
+        };
 
         if(!validTransitions[currentStatus].Contains(status))
         {
@@ -162,8 +166,11 @@ public class OrderService(IOrderRepository orderRepository, IUserService userSer
         }
 
         order.Status = status.ToString();
+        order.UpdatedAt = DateTime.UtcNow;
 
         orderRepository.Update(order);
+
+        return new UpdateOrderStatusResponseDto($"Order status updated to: {status}", order.UpdatedAt.Value);
     }
 
     public SalesReportDto GetSalesReport()

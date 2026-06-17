@@ -5,6 +5,8 @@ namespace DarkKitchen.DataAccess.Repositories;
 
 public class UserRepository(AppDbContext context) : IUserRepository
 {
+    public bool HasAny() => context.Users.Any();
+
     public void Add(User user)
     {
         context.Users.Add(user);
@@ -13,7 +15,13 @@ public class UserRepository(AppDbContext context) : IUserRepository
 
     public void Delete(User user)
     {
-        context.Users.Remove(user);
+        var existingUser = context.Users.Find(user.Id);
+        if(existingUser == null)
+        {
+            return;
+        }
+
+        existingUser.IsDeleted = true;
         context.SaveChanges();
     }
 
@@ -30,7 +38,7 @@ public class UserRepository(AppDbContext context) : IUserRepository
     public List<User> GetUsers(string? name, string? surname)
     {
         return context.Users.Where(u =>
-            (string.IsNullOrEmpty(name) || u.Name == name) && (string.IsNullOrEmpty(surname) || u.Surname == surname)).ToList();
+            !u.IsDeleted && (string.IsNullOrEmpty(name) || u.Name.Contains(name)) && (string.IsNullOrEmpty(surname) || u.Surname.Contains(surname))).ToList();
     }
 
     public void Update(User user)

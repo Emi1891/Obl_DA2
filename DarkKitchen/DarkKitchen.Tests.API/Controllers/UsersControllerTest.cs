@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using DarkKitchen.API.Controllers;
 using DarkKitchen.Domain.Enums;
 using DarkKitchen.Domain.Exceptions;
 using DarkKitchen.Domain.Interfaces.Service;
 using DarkKitchen.Models.UserDTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -26,6 +28,13 @@ public class UsersControllerTest
     {
         userServiceMock = new Mock<IUserService>(MockBehavior.Strict);
         userController = new UsersController(userServiceMock.Object);
+
+        var identity = new ClaimsIdentity([new Claim(ClaimTypes.Email, "admin@email.com")]);
+        userController.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+        };
+
         users =
         [
             new UserResponseDto(1, "Name", "Surname", validEmail, validPhone, nameof(Role.Client))
@@ -98,6 +107,7 @@ public class UsersControllerTest
     [TestMethod]
     public void UpdateUser_ExistingUser_ReturnsOk()
     {
+        userServiceMock.Setup(s => s.EnsureNotSelf(validUser.email, It.IsAny<string>()));
         userServiceMock.Setup(s => s.UpdateUser(validUser));
         var result = userController.UpdateUser(validUser);
         var resultObj = result as ObjectResult;
@@ -109,6 +119,7 @@ public class UsersControllerTest
     [TestMethod]
     public void UpdateUser_UserNotFound_ThrowsNotFoundException()
     {
+        userServiceMock.Setup(s => s.EnsureNotSelf(validUser.email, It.IsAny<string>()));
         userServiceMock.Setup(s => s.UpdateUser(validUser)).Throws(new NotFoundException("User not found."));
         Assert.ThrowsException<NotFoundException>(() => userController.UpdateUser(validUser));
     }
@@ -117,7 +128,13 @@ public class UsersControllerTest
     public void GetUsers_ValidFilter_ReturnsOk()
     {
         userServiceMock.Setup(s => s.GetUsers(It.IsAny<UserFiltersDto>())).Returns(users!);
-        var result = userController.GetUsers(new UserFiltersDto("Name", "Surname"));
+        var filters = new UserFiltersDto
+        {
+            Name = "Name",
+            Surname = "Surname"
+        };
+
+        var result = userController.GetUsers(filters);
         var resultObj = result as ObjectResult;
 
         Assert.IsNotNull(resultObj);
@@ -128,12 +145,19 @@ public class UsersControllerTest
     public void GetUsers_NoUsersFound_ThrowsNotFoundException()
     {
         userServiceMock.Setup(s => s.GetUsers(It.IsAny<UserFiltersDto>())).Throws(new NotFoundException("No users found."));
-        Assert.ThrowsException<NotFoundException>(() => userController.GetUsers(new UserFiltersDto("Name", "Surname")));
+        var filters = new UserFiltersDto
+        {
+            Name = "Name",
+            Surname = "Surname"
+        };
+
+        Assert.ThrowsException<NotFoundException>(() => userController.GetUsers(filters));
     }
 
     [TestMethod]
     public void DeleteUser_ExistingUser_ReturnsOk()
     {
+        userServiceMock.Setup(s => s.EnsureNotSelf(validEmail, It.IsAny<string>()));
         userServiceMock.Setup(s => s.DeleteUser(validEmail));
         var result = userController.DeleteUser(validEmail);
         var resultObj = result as ObjectResult;
@@ -145,6 +169,7 @@ public class UsersControllerTest
     [TestMethod]
     public void DeleteUser_UserNotFound_ThrowsNotFoundException()
     {
+        userServiceMock.Setup(s => s.EnsureNotSelf(validEmail, It.IsAny<string>()));
         userServiceMock.Setup(s => s.DeleteUser(validEmail)).Throws(new NotFoundException("User not found."));
         Assert.ThrowsException<NotFoundException>(() => userController.DeleteUser(validEmail));
     }
@@ -152,7 +177,18 @@ public class UsersControllerTest
     [TestMethod]
     public void DeleteUser_EmptyEmail_ThrowsBadRequestException()
     {
+        userServiceMock.Setup(s => s.EnsureNotSelf(string.Empty, It.IsAny<string>()));
         userServiceMock.Setup(s => s.DeleteUser(string.Empty)).Throws(new BadRequestException("Email can't be empty."));
         Assert.ThrowsException<BadRequestException>(() => userController.DeleteUser(string.Empty));
+    }
+
+    [TestMethod]
+    public void DeleteUser_WhenSelf_PropagatesBadRequestException()
+    {
+        userServiceMock.Setup(s => s.EnsureNotSelf(validEmail, It.IsAny<string>()))
+            .Throws(new BadRequestException("A user cannot modify or delete their own account."));
+
+        Assert.ThrowsException<BadRequestException>(() => userController.DeleteUser(validEmail));
+        userServiceMock.Verify(s => s.DeleteUser(It.IsAny<string>()), Times.Never);
     }
 }

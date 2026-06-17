@@ -1,0 +1,8 @@
+<div class="app-shell">
+  @if (showNavbar()) {
+    <app-navbar />
+  }
+  <main class="app-content" [class.with-navbar]="showNavbar()">
+    <router-outlet />
+  </main>
+</div>

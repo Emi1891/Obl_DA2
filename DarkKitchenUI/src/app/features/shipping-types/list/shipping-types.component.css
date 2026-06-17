@@ -1,0 +1,99 @@
+.shipping-types-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.shipping-types-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  color: var(--dk-text);
+}
+
+.subtitle {
+  color: var(--dk-subtext);
+  font-size: 0.95rem;
+}
+
+.table-wrap {
+  background-color: var(--dk-surface);
+  border: 1px solid var(--dk-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.shipping-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Josefin Sans", system-ui;
+}
+
+.shipping-table thead {
+  background-color: var(--dk-crust);
+}
+
+.shipping-table th {
+  text-align: left;
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dk-subtext);
+}
+
+.shipping-table td {
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  color: var(--dk-text);
+  border-top: 1px solid var(--dk-border);
+}
+
+.shipping-table tbody tr:hover {
+  background-color: rgba(255, 111, 97, 0.04);
+}
+
+.type-name {
+  font-family: "Josefin Sans", system-ui;
+  font-weight: 600;
+}
+
+.type-price {
+  color: var(--dk-subtext);
+  font-size: 0.85rem;
+}
+
+.actions-col {
+  text-align: right;
+}
+
+.cell-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .shipping-types-container {
+    padding: 2rem 1.25rem;
+  }
+
+  .shipping-table th,
+  .shipping-table td {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+}

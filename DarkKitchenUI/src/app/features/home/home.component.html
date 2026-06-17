@@ -1,0 +1,12 @@
+<div class="home-container">
+  <div class="home-header">
+    <h1>Welcome{{ userName ? ', ' + userName : '' }}</h1>
+    <p class="subtitle">Here's a live overview of what's happening in your kitchen right now.</p>
+  </div>
+
+  @if (isLoading) {
+    <p class="loading">Loading...</p>
+  } @else if (stats.length > 0) {
+    <app-stats-grid [stats]="stats" />
+  }
+</div>

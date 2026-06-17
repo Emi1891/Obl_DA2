@@ -14,6 +14,8 @@ public static class RepositoryExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IRolePermissionsRepository, RolePermissionsRepository>();
+        services.AddScoped<IAuditRepository, AuditRepository>();
+        services.AddScoped<IShippingTypeRepository, ShippingTypeRepository>();
         return services;
     }
 }

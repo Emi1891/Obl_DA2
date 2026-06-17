@@ -1,0 +1,22 @@
+.home-container {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.home-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  color: var(--dk-text);
+}
+
+.subtitle {
+  color: var(--dk-subtext);
+  font-size: 0.95rem;
+}

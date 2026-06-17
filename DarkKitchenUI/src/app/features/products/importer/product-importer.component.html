@@ -1,0 +1,96 @@
+<div class="importer-container">
+  <div class="importer-card">
+    <button type="button" class="back-link" (click)="back()">← Back to products</button>
+
+    <h2>Import products</h2>
+    <p class="subtitle">Choose an importer and upload a file. Supported formats depend on the importer.</p>
+
+    @if (isLoading) {
+      <p class="loading">Loading importers...</p>
+    } @else if (importers.length === 0) {
+      <p class="empty">No importers are currently available.</p>
+    } @else {
+      <div class="field">
+        <label for="importer">Importer</label>
+        <select id="importer" [(ngModel)]="selectedImporter" [ngModelOptions]="{ standalone: true }">
+          @for (i of importers; track i.name) {
+            <option [value]="i.name">{{ i.name }} ({{ i.extension }})</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="file">File</label>
+        <label for="file" class="file-drop">
+          @if (selectedFile) {
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-meta">{{ (selectedFile.size / 1024).toFixed(1) }} KB</span>
+          } @else {
+            <span class="file-meta">
+              Click to choose a file
+              @if (expectedExtension) { ({{ expectedExtension }}) }
+            </span>
+          }
+        </label>
+        <input
+          id="file"
+          type="file"
+          [accept]="expectedExtension || ''"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+      </div>
+
+      @if (errorMessage) { <p class="error">{{ errorMessage }}</p> }
+      @if (successMessage) { <p class="success">{{ successMessage }}</p> }
+
+      <div class="actions">
+        <button type="button" class="ghost-btn" (click)="back()">Cancel</button>
+        <button type="button" class="primary-btn" (click)="upload()" [disabled]="isUploading">
+          {{ isUploading ? 'Uploading...' : 'Import' }}
+        </button>
+      </div>
+    }
+
+    <hr class="divider" />
+
+    <div class="actions">
+      <button type="button" class="ghost-btn" (click)="toggleImporterUpload()">
+        {{ showImporterUpload ? 'Cancel' : '+ Add a new importer' }}
+      </button>
+    </div>
+
+    @if (showImporterUpload) {
+      <h3 class="section-title">Add a new importer</h3>
+      <p class="subtitle">Upload a .dll plugin to register a new importer. It becomes available immediately.</p>
+
+      <div class="field">
+        <label for="importerFile">Importer plugin</label>
+        <label for="importerFile" class="file-drop">
+          @if (importerFile) {
+            <span class="file-name">{{ importerFile.name }}</span>
+            <span class="file-meta">{{ (importerFile.size / 1024).toFixed(1) }} KB</span>
+          } @else {
+            <span class="file-meta">Click to choose a .dll file</span>
+          }
+        </label>
+        <input
+          id="importerFile"
+          type="file"
+          accept=".dll"
+          (change)="onImporterFileSelected($event)"
+          hidden
+        />
+      </div>
+
+      @if (importerErrorMessage) { <p class="error">{{ importerErrorMessage }}</p> }
+      @if (importerSuccessMessage) { <p class="success">{{ importerSuccessMessage }}</p> }
+
+      <div class="actions">
+        <button type="button" class="primary-btn" (click)="uploadImporter()" [disabled]="isInstalling">
+          {{ isInstalling ? 'Uploading...' : 'Upload importer' }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

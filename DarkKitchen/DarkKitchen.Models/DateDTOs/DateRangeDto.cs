@@ -1,3 +1,7 @@
 ﻿namespace DarkKitchen.Models.DateDTOs;
 
-public readonly record struct DateRangeDto(DateTime dateFrom, DateTime dateTo);
+public sealed record DateRangeDto
+{
+    public DateTime DateFrom { get; set; }
+    public DateTime DateTo { get; set; }
+}

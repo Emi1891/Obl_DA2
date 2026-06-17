@@ -37,7 +37,7 @@ public class OrdersControllerTest
             HttpContext = new DefaultHttpContext { User = claimsPrincipal }
         };
 
-        validOrder = new OrderDto("express", new AddressDto("18 de Julio", "1234", "101"), [new OrderProductDto("PROD01", 2)]);
+        validOrder = new OrderDto(1, new AddressDto("18 de Julio", "1234", "101"), [new OrderProductDto("PROD01", 2)]);
 
         orderResponse = new OrderResponseDto(1, 1, "Pending", DateTime.Now, 100, 0, 22, 10, 132, []);
 
@@ -48,6 +48,7 @@ public class OrdersControllerTest
     public void CreateOrder_ValidData_ReturnsCreated()
     {
         orderServiceMock!.Setup(s => s.CreateOrder(validOrder, 1)).Returns(orderResponse);
+
         var result = ordersController!.CreateOrder(validOrder);
         var resultObj = result as ObjectResult;
 
@@ -58,7 +59,7 @@ public class OrdersControllerTest
     [TestMethod]
     public void CreateOrder_NoProducts_ThrowsBadRequestException()
     {
-        var emptyOrder = new OrderDto("express", new AddressDto("18 de Julio", "1234", "101"), []);
+        var emptyOrder = new OrderDto(1, new AddressDto("18 de Julio", "1234", "101"), []);
         orderServiceMock!.Setup(s => s.CreateOrder(emptyOrder, 1)).Throws(new BadRequestException("Order must have at least one product."));
 
         Assert.ThrowsException<BadRequestException>(() => ordersController!.CreateOrder(emptyOrder));
@@ -68,7 +69,9 @@ public class OrdersControllerTest
     public void GetClientOrders_ValidFilter_ReturnsOk()
     {
         orderServiceMock!.Setup(s => s.GetClientOrders(It.IsAny<int>(), It.IsAny<OrderFiltersDto>())).Returns(orders!);
-        var result = ordersController!.GetClientOrders(new OrderFiltersDto(null, null, null));
+        var filters = new OrderFiltersDto { };
+
+        var result = ordersController!.GetClientOrders(filters);
         var resultObj = result as ObjectResult;
 
         Assert.IsNotNull(resultObj);
@@ -79,15 +82,22 @@ public class OrdersControllerTest
     public void GetClientOrders_NoOrdersFound_ThrowsNotFoundException()
     {
         orderServiceMock!.Setup(s => s.GetClientOrders(It.IsAny<int>(), It.IsAny<OrderFiltersDto>())).Throws(new NotFoundException("No orders found."));
+        var filters = new OrderFiltersDto { };
 
-        Assert.ThrowsException<NotFoundException>(() => ordersController!.GetClientOrders(new OrderFiltersDto(null, null, null)));
+        Assert.ThrowsException<NotFoundException>(() => ordersController!.GetClientOrders(filters));
     }
 
     [TestMethod]
     public void GetOrdersByStatus_ValidFilter_ReturnsOk()
     {
         orderServiceMock!.Setup(s => s.GetOrdersByStatus(It.IsAny<OrderFilterByStatusDto>())).Returns(orders!);
-        var result = ordersController!.GetOrdersByStatus(new OrderFilterByStatusDto(DateTime.Now.AddDays(-7), DateTime.Now, null, null));
+        var filters = new OrderFilterByStatusDto
+        {
+            DateFrom = DateTime.Now.AddDays(-7),
+            DateTo = DateTime.Now
+        };
+
+        var result = ordersController!.GetOrdersByStatus(filters);
         var resultObj = result as ObjectResult;
 
         Assert.IsNotNull(resultObj);
@@ -98,8 +108,13 @@ public class OrdersControllerTest
     public void GetOrdersByStatus_NoOrdersFound_ThrowsNotFoundException()
     {
         orderServiceMock!.Setup(s => s.GetOrdersByStatus(It.IsAny<OrderFilterByStatusDto>())).Throws(new NotFoundException("No orders found."));
+        var filters = new OrderFilterByStatusDto
+        {
+            DateFrom = DateTime.Now.AddDays(-7),
+            DateTo = DateTime.Now
+        };
 
-        Assert.ThrowsException<NotFoundException>(() => ordersController!.GetOrdersByStatus(new OrderFilterByStatusDto(DateTime.Now.AddDays(-7), DateTime.Now, null, null)));
+        Assert.ThrowsException<NotFoundException>(() => ordersController!.GetOrdersByStatus(filters));
     }
 
     [TestMethod]
@@ -125,7 +140,8 @@ public class OrdersControllerTest
     public void UpdateOrderStatus_ValidStatus_ReturnsOk()
     {
         var newStatus = new UpdateOrderStatusDto(nameof(OrderStatus.Prepared));
-        orderServiceMock!.Setup(s => s.UpdateOrderStatus(1, newStatus, It.IsAny<List<Permission>>()));
+        orderServiceMock!.Setup(s => s.UpdateOrderStatus(1, newStatus, It.IsAny<List<Permission>>()))
+            .Returns(new UpdateOrderStatusResponseDto("Order status updated to: Prepared", DateTime.UtcNow));
         var result = ordersController!.UpdateOrderStatus(1, newStatus);
         var resultObj = result as ObjectResult;
 

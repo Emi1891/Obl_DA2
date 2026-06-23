@@ -24,7 +24,20 @@ builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.ConfigurePluginsFolder();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFront", policy =>
+    {
+        policy.WithOrigins("http://localhost:8001")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowFront");
 
 app.UseSwagger();
 app.UseSwaggerUI();

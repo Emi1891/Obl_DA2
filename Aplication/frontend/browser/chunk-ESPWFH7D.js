@@ -1,0 +1,1 @@
+var o=["January","February","March","April","May","June","July","August","September","October","November","December"];function n(){let t=new Date,e=new Date;return e.setMonth(t.getMonth()-1),{dateFrom:e.toISOString().slice(0,10),dateTo:t.toISOString().slice(0,10)}}export{o as a,n as b};

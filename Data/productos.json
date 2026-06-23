@@ -1,0 +1,58 @@
+[
+  {
+    "code": "BURG-001",
+    "name": "Hamburguesa Clasica",
+    "price": 320.00,
+    "description": "Hamburguesa de carne vacuna 150g con lechuga, tomate y queso cheddar.",
+    "productLine": "Hamburguesas",
+    "category": "Platos principales",
+    "imagePaths": [
+      "/images/burger-clasica-1.jpg",
+      "/images/burger-clasica-2.jpg",
+      "/images/burger-clasica-3.jpg"
+    ]
+  },
+  {
+    "code": "PIZZA-001",
+    "name": "Pizza Muzzarella",
+    "price": 480.50,
+    "description": "Pizza a la piedra con salsa de tomate, muzzarella y aceitunas.",
+    "productLine": "Pizzas",
+    "category": "Platos principales",
+    "imagePaths": [
+      "/images/pizza-muzzarella-1.jpg",
+      "/images/pizza-muzzarella-2.jpg"
+    ]
+  },
+  {
+    "code": "SODA-001",
+    "name": "Agua Mineral 500ml",
+    "price": 90.00,
+    "description": "Botella de agua mineral sin gas.",
+    "productLine": "Bebidas",
+    "category": "Bebidas sin alcohol",
+    "imagePaths": []
+  },
+  {
+    "code": "POSTRE-001",
+    "name": "Flan Casero",
+    "price": 180.00,
+    "description": "Flan casero con dulce de leche y crema.",
+    "productLine": "Postres",
+    "category": "Postres",
+    "imagePaths": [
+      "/images/flan-casero-1.jpg"
+    ]
+  },
+  {
+    "code": "ENTR-001",
+    "name": "Empanadas de Carne",
+    "price": 140.00,
+    "description": "Media docena de empanadas de carne cortada a cuchillo.",
+    "productLine": "Entradas",
+    "category": "Entradas",
+    "imagePaths": [
+      "/images/empanadas-carne-1.jpg"
+    ]
+  }
+]

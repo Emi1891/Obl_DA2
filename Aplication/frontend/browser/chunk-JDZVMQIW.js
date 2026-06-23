@@ -1,0 +1,1 @@
+function n(s){let e=s?.error,r;if(typeof e=="string")try{r=JSON.parse(e).message??e}catch{r=e}else e&&typeof e=="object"&&(r=e.message);return r&&r.replace(/^[^:]+:\s*/,"").trim()||null}export{n as a};

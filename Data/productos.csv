@@ -1,0 +1,6 @@
+code,name,price,description,productline,category,imagepaths
+WRAP-001,Wrap de Pollo,290.00,"Wrap de tortilla con pollo grillado, lechuga y aderezo cesar.",Wraps,Platos principales,/images/wrap-pollo-1.jpg;/images/wrap-pollo-2.jpg
+TACO-001,Tacos al Pastor,260.00,"Tres tacos de cerdo marinado con piña, cebolla y cilantro.",Tacos,Platos principales,/images/tacos-pastor-1.jpg;/images/tacos-pastor-2.jpg;/images/tacos-pastor-3.jpg
+JUGO-001,Jugo de Naranja Natural,120.00,Jugo de naranja exprimido al momento.,Bebidas,Bebidas sin alcohol,/images/jugo-naranja-1.jpg
+ENSA-001,Ensalada Cesar,230.00,"Lechuga romana, croutons, queso parmesano y aderezo cesar.",Ensaladas,Entradas,
+BROWNIE-001,Brownie con Helado,210.00,Brownie tibio de chocolate con helado de vainilla.,Postres,Postres,/images/brownie-helado-1.jpg

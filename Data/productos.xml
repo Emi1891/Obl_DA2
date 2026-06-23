@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+  <product>
+    <code>SUSHI-001</code>
+    <name>Sushi Roll California</name>
+    <price>390.00</price>
+    <description>Roll de cangrejo, palta y pepino con semillas de sesamo.</description>
+    <productLine>Sushi</productLine>
+    <category>Platos principales</category>
+    <imagePaths>
+      <imagePath>/images/sushi-california-1.jpg</imagePath>
+      <imagePath>/images/sushi-california-2.jpg</imagePath>
+    </imagePaths>
+  </product>
+  <product>
+    <code>SOPA-001</code>
+    <name>Sopa de Cebolla</name>
+    <price>200.00</price>
+    <description>Sopa de cebolla caramelizada gratinada con queso.</description>
+    <productLine>Sopas</productLine>
+    <category>Entradas</category>
+    <imagePaths>
+      <imagePath>/images/sopa-cebolla-1.jpg</imagePath>
+    </imagePaths>
+  </product>
+  <product>
+    <code>CERV-001</code>
+    <name>Cerveza Artesanal IPA</name>
+    <price>180.00</price>
+    <description>Cerveza artesanal estilo IPA de 500ml.</description>
+    <productLine>Bebidas</productLine>
+    <category>Bebidas con alcohol</category>
+    <imagePaths>
+      <imagePath>/images/cerveza-ipa-1.jpg</imagePath>
+    </imagePaths>
+  </product>
+  <product>
+    <code>PAPAS-001</code>
+    <name>Papas Fritas</name>
+    <price>150.00</price>
+    <description>Porcion de papas fritas crocantes con sal marina.</description>
+    <productLine>Acompañamientos</productLine>
+    <category>Entradas</category>
+    <imagePaths />
+  </product>
+  <product>
+    <code>CHEESE-001</code>
+    <name>Cheesecake de Frutos Rojos</name>
+    <price>240.00</price>
+    <description>Cheesecake cremoso con salsa de frutos rojos.</description>
+    <productLine>Postres</productLine>
+    <category>Postres</category>
+    <imagePaths>
+      <imagePath>/images/cheesecake-frutos-1.jpg</imagePath>
+      <imagePath>/images/cheesecake-frutos-2.jpg</imagePath>
+      <imagePath>/images/cheesecake-frutos-3.jpg</imagePath>
+    </imagePaths>
+  </product>
+</products>

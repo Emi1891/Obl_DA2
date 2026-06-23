@@ -1,0 +1,1 @@
+function i(r){let t="";for(let e=0;e<r.length;e++)(e===3||e===6)&&(t+=" "),t+=r[e];return t}function n(r){let t=r.replace(/\D/g,"");return t.startsWith("598")&&(t=t.slice(3)),i(t.slice(0,9))}function o(r){let t=r.replace(/\D/g,"");return t?`+${t.slice(0,3)} ${i(t.slice(3,12))}`:""}export{i as a,n as b,o as c};
